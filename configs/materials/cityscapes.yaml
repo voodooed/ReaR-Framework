@@ -1,0 +1,46 @@
+# Cityscapes 19-class `trainId` space -> material mixture.
+#
+# THIS IS THE DATASET-FACING HALF OF THE MATERIAL SYSTEM. A dataset config
+# names a label space here (`materials.label_space`); nothing in rear/*.py
+# knows what a "road" or a "GuardRail" is. A new dataset with a new taxonomy is
+# a new file in this directory plus one line in its dataset YAML -- the material
+# palette (rear/materials/data/materials.yaml) and the physics do not change.
+#
+# WHY CITYSCAPES. VoD is Delft: European urban street scenes, an almost exact
+# domain match. Decisively, CARLA's palette is itself Cityscapes-derived, so
+# VoD and KITTI-CARLA align natively rather than through an invented
+# correspondence -- see carla.yaml.
+#
+# MIXTURES, NOT SINGLE MATERIALS. "Car" is not a material: it is metal with
+# glass apertures and rubber at the bottom, and at 77 GHz those differ by ~15 dB
+# in normal-incidence reflectivity. Fractions are of the RADAR-VISIBLE EXTERIOR
+# SURFACE and sum to 1.0. They are structural estimates, not measurements.
+#
+# AN EMPTY MIXTURE MEANS "RETURNS NOTHING" and is never replaced by a uniform
+# prior -- that is the physically correct statement for sky and the honest one
+# for an unlabelled point.
+
+name: cityscapes
+description: Cityscapes 19-class trainId space (SegFormer / most urban segmenters)
+n_classes: 19
+
+classes:
+  0:  {name: road,          mixture: {asphalt: 1.0}}
+  1:  {name: sidewalk,      mixture: {concrete: 0.8, asphalt: 0.2}}
+  2:  {name: building,      mixture: {concrete: 0.55, brick: 0.25, glass: 0.20}}
+  3:  {name: wall,          mixture: {concrete: 0.9, brick: 0.1}}
+  4:  {name: fence,         mixture: {metal: 0.6, wood: 0.4}}
+  5:  {name: pole,          mixture: {metal: 0.9, plastic: 0.1}}
+  6:  {name: traffic_light, mixture: {metal: 0.7, plastic: 0.3}}
+  7:  {name: traffic_sign,  mixture: {metal: 0.85, plastic: 0.15}}
+  8:  {name: vegetation,    mixture: {vegetation: 1.0}}
+  9:  {name: terrain,       mixture: {soil: 0.6, vegetation: 0.4}}
+  10: {name: sky,           mixture: {}}          # no return
+  11: {name: person,        mixture: {human_tissue: 1.0}}
+  12: {name: rider,         mixture: {human_tissue: 0.7, metal: 0.3}}
+  13: {name: car,           mixture: {metal: 0.75, glass: 0.20, rubber: 0.05}}
+  14: {name: truck,         mixture: {metal: 0.85, glass: 0.10, rubber: 0.05}}
+  15: {name: bus,           mixture: {metal: 0.80, glass: 0.15, rubber: 0.05}}
+  16: {name: train,         mixture: {metal: 0.9, glass: 0.1}}
+  17: {name: motorcycle,    mixture: {metal: 0.8, plastic: 0.1, rubber: 0.1}}
+  18: {name: bicycle,       mixture: {metal: 0.9, rubber: 0.1}}

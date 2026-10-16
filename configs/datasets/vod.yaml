@@ -1,0 +1,258 @@
+# View-of-Delft — dataset descriptor + FITTED artifacts.
+#
+# Every value here was previously a constant in code or an implicit assumption.
+# The rule this refactor enforces: nothing dataset-specific lives in
+# rear/*.py. All of it is data, and all of the `fitted:` block is produced
+# by scripts/fit_dataset.py.
+#
+# The fitted values below are MIGRATED from the legacy run, not refit. They are
+# the exact numbers behind every result in CHECKPOINT.md.
+
+name: vod
+adapter: rear.data.vod:VoDAdapter
+root: ${REAR_VOD_ROOT:/DATA1/Vivek/Sim2Real_RADAR/Data/VoD}
+
+# ---------------------------------------------------------------- sensors ---
+sensors:
+  has_real_radar: true
+  has_camera: true
+  lidar_sensor_type: HDL-64
+  lidar_columns: [x, y, z, intensity]      # NOTE: no incidence cosine
+  radar_columns: [x, y, z, rcs, v_r, v_r_comp, time]
+  radar_rcs_column: 3
+  # The radar sits 2.514 m forward and 1.153 m BELOW the roof LiDAR. Constant
+  # across the dataset to 6e-15 m (measured), which is why it can live here.
+  radar_mount_offset: [2.5140, 0.0610, -1.1530]
+  radar_fov_degrees: 60.0                  # measured: 98.3% of candidates |az|<60
+  # pcdet trees and their labels are in the NATIVE RADAR frame; the generator
+  # works in the LiDAR frame. Anything crossing that boundary needs the inverse.
+  pcdet_frame: radar
+  generator_frame: lidar
+
+# --------------------------------------------------------------- materials ---
+# MATERIAL INFORMATION IS A PERMANENT, DEFAULT-ON COMPONENT of the pipeline --
+# not an optional experiment. Every head trained here reads the 10-column
+# electromagnetic block alongside the 8 physics features.
+#
+# The physics itself (materials, permittivities, roughness) lives in the
+# database at rear/materials/data/*.yaml and is dataset-independent. The only
+# dataset-specific facts are the two below.
+materials:
+  enabled: true
+  # Which semantic vocabulary this dataset's labels are in ->
+  # configs/materials/cityscapes.yaml maps its 19 classes to material mixtures.
+  # A dataset with a different taxonomy adds a file there; no code changes.
+  label_space: cityscapes
+  # VoD ships NO per-point semantics, so they are predicted from the camera and
+  # transferred by projection (P2 @ R0_rect @ Tr_velo_to_cam, from VoD's own
+  # calib files). Coverage is therefore camera-limited: 79.6% of candidates
+  # receive material and frac_labelled averages 0.565 over all candidates --
+  # carried as an explicit feature column, not hidden.
+  source: camera_segmentation
+  segmentation:
+    # Chosen by elimination, not popularity: dense STUFF classes are mandatory
+    # (94.9% of the population needing material is road/facade/vegetation/
+    # terrain/pole/fence), which rules out COCO-things instance models and
+    # class-agnostic SAM; and Cityscapes is both a near-exact domain match for
+    # Delft and the space CARLA's palette derives from, which is what makes
+    # VoD->KITTI-CARLA transfer expressible at all. Frozen, never fine-tuned.
+    # Measured mean per-candidate confidence: 0.93.
+    model: nvidia/segformer-b4-finetuned-cityscapes-1024-1024
+    short_side: 1024
+  # ZF FRGen21 is a 77 GHz automotive radar; lambda = 3.893 mm. Single-valued
+  # deliberately -- sweeping 76->81 GHz moves concrete's |Gamma| by 0.005%.
+  frequency_ghz: 77.0
+  # Which block reaches the head. `em` is the production choice: 10 columns
+  # regardless of the segmenter's vocabulary, a shared cross-dataset coordinate
+  # system, and graceful placement of unseen classes. `comp` (11 raw material
+  # fractions) and `sem` (raw class fractions) are the diagnostic alternatives;
+  # `c2` (deranged constants) and `cov` (coverage only) are the CONTROLS -- see
+  # rear/materials/taxonomy.py on why the controls matter here.
+  variant: em
+
+# ------------------------------------------------------------------ splits ---
+splits:
+  kind: sequence_level          # CLAUDE.md forbids frame-level splits
+  train_fraction: 0.70
+  val_fraction: 0.15
+  # 17 usable labelled sequences -> 12 / 3 / 2
+  expected: {train_sequences: 12, val_sequences: 3, test_sequences: 2,
+             train_frames: 4251, val_frames: 898, test_frames: 413}
+
+# ------------------------------------------------- fitted (from fit_dataset) ---
+fitted:
+  # Every fitted artifact below lives under this directory. Namespaced by
+  # dataset name so a repo can carry more than one fitted profile side by
+  # side (e.g. weights/vod/, weights/my_radar/) without collisions --
+  # resolved automatically by rear.generate.generate_radar_frame.
+  # generate_for_frame() when a caller does not pass out_dir explicitly, and
+  # inherited by any dataset that sets `fitted_from: vod` (KITTI-CARLA does).
+  weights_dir: weights/vod
+
+  # 1. candidate definition
+  candidates:
+    voxel_size: 0.4
+    x_range: [-20.0, 100.0]
+    y_range: [-90.0, 90.0]
+    z_range: [-7.0, 5.0]
+    max_occlusion_depth: 3       # chosen at the object-coverage saturation point
+    min_consecutive_blocking_voxels: 1
+    apply_fov_mask: true
+    # VoD has no per-point incidence cosine, so it is estimated from local
+    # surface normals. Using raw intensity here was a measured sim2real hazard.
+    cos_angle_source: estimate_normals
+    normal_radius: 0.6
+    normal_k_neighbors: 10
+    ground_z_source: geometric_percentile
+    voxel_size_schedule: fixed   # the only value; range-adaptive was
+                                 # trialled, REJECTED, and its code removed
+
+  # 2. association operating point (selected by null-controlled true signal)
+  association:
+    matcher: cone
+    range_tolerance_m: 1.0
+    cone_angle_deg: 5.0
+    box_margin_m: 0.5
+    true_signal_pp: 57.4         # observed minus azimuth-jitter null, test split
+
+  # 3. soft labels
+  soft_labels:
+    formula: v3_rank_weighted
+    epsilon_unmatched: 0.02
+    max_confidence: 1.0
+    out_of_box_discount: 0.7
+
+  # 4. feature scaling — artifact, never hardcoded; constants live on the
+  #    checkpoints themselves and travel with them
+  scaling:
+    method: median_iqr
+    clip: 10.0
+    source: checkpoint            # mu/sigma read from the .pt, not from here
+    feature_variant: drop         # variant A: expected_vr removed
+    feature_names: [range, azimuth, elevation, cos_angle,
+                    height_above_ground, point_density, path_loss,
+                    occlusion_depth]
+
+  # 5. heads
+  #
+  # Both architectures are JOINT heads: one network per architecture emitting
+  # BOTH the detection logit and the RCS estimate, trained on the same 8
+  # physics features plus the same 10-column material block, under one protocol
+  # (rear/models/base.py). One checkpoint per architecture, self-describing --
+  # scaler, feature variant, material config and RCS target statistics all
+  # travel inside the .pt and are never recomputed at inference.
+  heads:
+    # WHICH ARCHITECTURE THE GENERATOR LOADS.
+    #
+    #   prism  PRISM-2: five link-budget branches over disjoint feature groups,
+    #          spectral embedding at K=4, material branch, 3-component RCS
+    #          mixture. The final architecture -- rear/models/prism.py.
+    #   mlp    64-64 ReLU baseline over the concatenated input. The control
+    #          that makes PRISM's numbers readable, and the conservative choice
+    #          when cross-dataset smoothness outranks held-out accuracy.
+    #
+    # Override without editing this file:
+    #   generate_for_frame(adapter, frame, architecture="mlp")
+    #   scripts/generate.py --head mlp   |   tools/*.py --head mlp
+    implementation: prism
+
+    prism:
+      artifact: weights/vod/prism_head.pt
+      arm: prism2_k4_em
+      n_frequencies: 4          # NOT 8 -- see rear/models/prism.py
+      n_mixture: 3
+      branch_width: 64
+      trunk_width: 128
+      rcs_loss: nll+mse
+
+    mlp:
+      artifact: weights/vod/mlp_head.pt
+      arm: mlp_64_64_em
+      hidden: [64, 64]
+      rcs_loss: huber
+
+    # Training protocol, identical for both architectures so the comparison
+    # measures the architecture and nothing else.
+    training:
+      optimiser: adam
+      learning_rate: 0.001
+      batch_size: 4096
+      # SUB-EPOCH VALIDATION IS NOT OPTIONAL. One epoch is 1,683 steps at this
+      # batch size and the joint model reaches its best validation score INSIDE
+      # the first epoch, then overfits (val AUC 0.8477 -> 0.8413 over eight
+      # epochs). Validating once per epoch snapshots an arbitrary point on a
+      # declining curve and produced a +/-0.0125 seed spread.
+      eval_every_steps: 200
+      patience_validations: 15
+      model_selection: best_val_loss
+      seeds: [0, 1, 2, 3, 4]
+
+  # 6. detection (Platt) calibration — monotone, cannot change AUC
+  #
+  # PER-ARCHITECTURE, AND THERE IS NO SHARED FALLBACK. The map is fitted so
+  # expected per-frame detection counts match real ones, which makes it a
+  # property of one head's probability SCALE, not of the dataset. Applying one
+  # head's map to another mis-scales the realised count badly while leaving
+  # every head-level metric untouched -- the map is monotone, so it cannot
+  # reorder candidates and cannot move AUC. That is exactly what makes the
+  # mistake silent, and why the generator resolves
+  # `detection_calibration_<arch>.pkl` and refuses to guess.
+  #
+  # Refit after ANY change to a head:
+  #   python scripts/fit_dataset.py --dataset vod --stage platt --head <arch>
+  platt:
+    fit_split: val               # never test
+    prism:
+      artifact: weights/vod/detection_calibration_prism.pkl
+    mlp:
+      artifact: weights/vod/detection_calibration_mlp.pkl
+
+  # 7. RCS calibration (two-piece quantile).
+  #
+  # KEEP ENABLED. Disabling it recovers +0.0107 swap-test Car AP but scores
+  # 0.0000 downstream and pushes RCS Wasserstein 2.544 -> 4.759, failing the
+  # <=2.7 structural criterion that was passing. The trade is strictly
+  # negative. The flag stays available; the default does not change.
+  #
+  # ALSO PER-ARCHITECTURE: piece (a) of the map bins candidates by the head's
+  # own PREDICTED value, so its bin edges are that head's prediction quantiles.
+  #   python scripts/fit_dataset.py --dataset vod --stage rcs_calibration --head <arch>
+  rcs_calibration:
+    enabled: true
+    fit_split: train
+    fit_stride: 2
+    prism:
+      artifact: weights/vod/rcs_calibration_prism.pkl
+    mlp:
+      artifact: weights/vod/rcs_calibration_mlp.pkl
+
+  # 8. clutter process (inhomogeneous PPP over range x azimuth)
+  clutter:
+    artifact: weights/vod/clutter_process.pkl
+    rate_mean: 98.9694
+    rate_std: 37.3603
+    n_range_bins: 20
+    speed_conditioned: true
+    speed_rate_factor: [0.7712, 0.9092, 1.0258, 1.1220, 1.1719]
+    vr_convention: compensated    # pools built from radar column 5
+    elevation_validated: false    # per-range-bin pool; never null-controlled
+
+# ---------------------------------------------------------------- classes ---
+classes:
+  evaluated: [Car, Pedestrian, Cyclist]
+  hit_rate: [Car, Pedestrian, Cyclist, rider, motor]
+  # measured counts in the test split; truck and ride_other are ABSENT there
+  test_counts: {rider: 863, Car: 837, Cyclist: 740, motor: 130,
+                Pedestrian: 89, moped_scooter: 1}
+
+# ------------------------------------------------------------- downstream ---
+# Experiment-construction constants, previously literals in the E-series build
+# scripts. They describe how the mixed real+generated trees are laid out, not
+# anything learned.
+downstream:
+  train_stride: 2          # every 2nd train frame -> the "scarce real" regime
+  generated_id_offset: 60000   # generated sample ids start here so they cannot
+                               # collide with real ids in a mixed tree
+  test_sequence_cut: 1507  # row index splitting the 2 test sequences in the
+                           # concatenated test feature matrix
+  min_points_per_box: 5

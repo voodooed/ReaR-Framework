@@ -1,0 +1,50 @@
+# Generator and validation defaults, for reference -- this documents what the
+# CLIs default to. Not auto-loaded by any script; the authoritative values live
+# in each dataset's own config and on each checkpoint.
+
+dataset: vod                     # override on the CLI: --dataset kitti_carla
+
+generator:
+  seed: 0                        # same seed -> byte-identical output
+  # Which architecture to load. Resolved per dataset from
+  # fitted.heads.implementation, and overridable with --head on every CLI.
+  head: prism                    # prism | mlp
+  # Two-piece RCS quantile calibration. KEEP ENABLED -- disabling it recovers
+  # +0.0107 swap-test Car AP but scores 0.0000 downstream and pushes RCS
+  # Wasserstein 2.544 -> 4.759, failing a criterion that was passing. The trade
+  # is strictly negative; the flag stays available, the default does not change.
+  rcs_calibration: true
+  device: cpu                    # the head is small; CPU is fine for inference
+  # Where a segmentation model runs when the dataset needs one to build the
+  # material block. A dataset that ships per-point semantics never loads one.
+  material_device: cuda
+
+materials:
+  # Material information is a PERMANENT stage, enabled per dataset in its own
+  # config (`materials:`). These are the defaults that block inherits.
+  frequency_ghz: 77.0            # lambda = 3.893 mm
+  variant: em                    # em | comp | sem | c2 | cov | none
+  # `c2` (deranged material->constant table) and `cov` (coverage only) are
+  # CONTROLS, not alternatives -- see rear/materials/taxonomy.py for what they
+  # measured and why the answer changes how the material result is read.
+
+validation:
+  fov_mask_both_sides: true      # never compare masked generated to unmasked real
+  null_control:
+    kind: azimuth_jitter
+    rotations_deg: [15.0, -15.0, 30.0, -30.0]
+    n_bootstrap: 2000
+  pass_ratio: 2.0                # model-vs-real / real-vs-real convention
+  matched_subsample: {cap: 60000, repeats: 40}
+
+training:
+  # The protocol both architectures are held to. Sub-epoch validation is not
+  # optional: the joint model peaks inside the first epoch and then overfits,
+  # so validating once per epoch snapshots an arbitrary point on a declining
+  # curve (measured: +/-0.0125 seed spread).
+  optimiser: adam
+  learning_rate: 0.001
+  batch_size: 4096
+  eval_every_steps: 200
+  patience_validations: 15
+  seeds: [0, 1, 2, 3, 4]

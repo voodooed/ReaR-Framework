@@ -1,0 +1,44 @@
+# CARLA semantic tags -> material mixture, as shipped in KITTI-CARLA's .ply
+# `semantic` field.
+#
+# CARLA's palette is itself Cityscapes-derived, which is what makes the two
+# datasets alignable at all -- the shared material space is inherited, not
+# invented. But the taxonomies are NOT identical, and that is exactly the case
+# the material representation exists to handle: `GuardRail` -> metal 1.0 has no
+# Cityscapes counterpart, and one-hot class vectors from the two datasets could
+# not be aligned at all. Projected into the shared 11-material space (and from
+# there into the 10-column EM block) they land in one coordinate system, so a
+# KITTI-CARLA tag never seen during fitting on VoD gets a sensible position
+# rather than an unseen column.
+#
+# KITTI-CARLA needs no segmentation model: it ships ground-truth semantics per
+# LiDAR point. The inference model is required only on the FITTING side.
+
+name: carla
+description: CARLA semantic tags (KITTI-CARLA .ply `semantic` field)
+n_classes: 23
+
+classes:
+  0:  {name: Unlabeled,    mixture: {}}
+  1:  {name: Building,     mixture: {concrete: 0.55, brick: 0.25, glass: 0.20}}
+  2:  {name: Fence,        mixture: {metal: 0.6, wood: 0.4}}
+  3:  {name: Other,        mixture: {}}
+  4:  {name: Pedestrian,   mixture: {human_tissue: 1.0}}
+  5:  {name: Pole,         mixture: {metal: 0.9, plastic: 0.1}}
+  6:  {name: RoadLine,     mixture: {asphalt: 1.0}}
+  7:  {name: Road,         mixture: {asphalt: 1.0}}
+  8:  {name: SideWalk,     mixture: {concrete: 0.8, asphalt: 0.2}}
+  9:  {name: Vegetation,   mixture: {vegetation: 1.0}}
+  10: {name: Vehicles,     mixture: {metal: 0.75, glass: 0.20, rubber: 0.05}}
+  11: {name: Wall,         mixture: {concrete: 0.9, brick: 0.1}}
+  12: {name: TrafficSign,  mixture: {metal: 0.85, plastic: 0.15}}
+  13: {name: Sky,          mixture: {}}
+  14: {name: Ground,       mixture: {soil: 0.6, vegetation: 0.4}}
+  15: {name: Bridge,       mixture: {concrete: 0.8, metal: 0.2}}
+  16: {name: RailTrack,    mixture: {metal: 0.7, soil: 0.3}}
+  17: {name: GuardRail,    mixture: {metal: 1.0}}       # no Cityscapes counterpart
+  18: {name: TrafficLight, mixture: {metal: 0.7, plastic: 0.3}}
+  19: {name: Static,       mixture: {concrete: 0.5, metal: 0.5}}
+  20: {name: Dynamic,      mixture: {metal: 0.75, glass: 0.20, rubber: 0.05}}
+  21: {name: Water,        mixture: {soil: 1.0}}        # placeholder: no water entry
+  22: {name: Terrain,      mixture: {soil: 0.6, vegetation: 0.4}}

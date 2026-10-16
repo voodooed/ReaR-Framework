@@ -1,0 +1,80 @@
+# KITTI-CARLA — simulated source domain. No real radar, so nothing can be
+# FITTED here: every fitted artifact is imported from a dataset that has paired
+# real radar (VoD). That asymmetry is the whole sim2real problem and is made
+# explicit by `fitted_from`.
+
+name: kitti_carla
+adapter: rear.data.kitti_carla:KITTICarlaAdapter
+root: ${REAR_KC_ROOT:/DATA1/Vivek/Sim2Real_RADAR/Data/KITTI_Carla}
+towns: [Town01, Town02]
+
+sensors:
+  has_real_radar: false          # -> swap test and association are unavailable
+  has_camera: true
+  lidar_sensor_type: CARLA-ray-cast-64
+  # x, y, z, cos_angle_lidar_surface (+ timestamp, instance, semantic).
+  # NOTE: NO intensity field. VoD has intensity and no cosine -- the exact
+  # mirror image, and why neither can be used as a shared input feature.
+  lidar_columns: [x, y, z, cos_angle_lidar_surface]
+  extra_point_fields: [timestamp, instance, semantic]
+  # No physical radar mount exists; the virtual radar sits at the LiDAR origin,
+  # and the instance-derived boxes share that frame. Hence NO transform when
+  # writing pcdet trees -- unlike VoD.
+  radar_mount_offset: [0.0, 0.0, 0.0]
+  radar_fov_degrees: 60.0        # imported, so generated output matches VoD's sector
+  pcdet_frame: lidar
+  generator_frame: lidar
+
+# --------------------------------------------------------------- materials ---
+# KITTI-CARLA needs NO segmentation model: it ships ground-truth semantics per
+# LiDAR point, so material comes straight off the sensor. The inference model is
+# required only on the FITTING side (VoD).
+#
+# THE SHARED MATERIAL SPACE IS WHAT MAKES THIS TRANSFER EXPRESSIBLE AT ALL.
+# CARLA's 23 tags and Cityscapes' 19 classes cannot be aligned as one-hot
+# vectors -- `GuardRail` has no Cityscapes counterpart at all. Projected into
+# the same 11-material palette and from there into the same 10-column
+# electromagnetic block, a head fitted on VoD reads KITTI-CARLA material in the
+# coordinate system it was trained in, and an unseen tag lands at a sensible
+# position rather than in a column that does not exist.
+#
+# KNOWN AND UNRESOLVED: the block is built from PREDICTED semantics while
+# fitting and from simulator GROUND TRUTH here. frac_labelled runs 0.565 on VoD
+# (camera-limited) against 1.000 here (CARLA labels every point), and
+# eps_real_mean differs by 1.26 VoD-sd. The field metrics say the head tolerates
+# it; there is no real radar here to verify against. Stated, not hidden.
+materials:
+  enabled: true
+  label_space: carla             # configs/materials/carla.yaml
+  source: lidar_semantic         # CARLA ground truth, per point
+  frequency_ghz: 77.0            # imported from VoD's radar, like every fit
+  variant: em
+
+splits:
+  kind: sequence_level
+  by: town
+
+fitted_from: vod                 # all learned components come from VoD
+fitted:
+  candidates:
+    voxel_size: 0.4
+    x_range: [-50.0, 50.0]
+    y_range: [-50.0, 50.0]
+    z_range: [-3.0, 5.0]
+    max_occlusion_depth: 3
+    min_consecutive_blocking_voxels: 1
+    apply_fov_mask: true
+    cos_angle_source: column3    # KC supplies a real incidence cosine
+    ground_z_source: geometric_percentile
+    voxel_size_schedule: fixed
+
+classes:
+  # derived from CARLA instance+semantic labels, not from human annotation
+  evaluated: [Car, Pedestrian, Cyclist]
+  carla_vehicle_tag: 10
+  carla_pedestrian_tag: 4
+  min_points_per_box: 20
+  note: >
+    CARLA has no bicycle class, so generated KC frames contribute ZERO Cyclist
+    supervision. Cyclist therefore acts as a built-in zero-supervision control
+    in any augmentation experiment.
