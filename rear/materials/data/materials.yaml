@@ -1,0 +1,136 @@
+# The scene material palette: the 11 materials the framework represents, each
+# resolved to electromagnetic constants and an RMS surface roughness.
+#
+# THIS FILE IS THE OTHER HALF OF THE DATABASE. Semantic classes never name a
+# permittivity directly -- they name a MIXTURE over these entries (see
+# configs/materials/<label_space>.yaml), and the physics is resolved here.
+# Adding a material is an edit to this file alone.
+#
+# TWO KINDS OF ENTRY
+# ------------------
+#   itu: <name>       resolved from itu_p2040_4.yaml at the radar frequency,
+#                     carrying that entry's band validity with it.
+#   eps_real/sigma    declared locally, for the four materials the ITU
+#                     Recommendation does not contain. Each carries an explicit
+#                     source and LOW confidence rather than being quietly
+#                     appended to the ITU table.
+#
+# RMS ROUGHNESS (h_rms_m) is not optional decoration. At 77 GHz lambda is
+# 3.893 mm, so roughness decides how much reflected power returns specularly to
+# the radar versus scattering away -- asphalt and a car door differ by two
+# orders of magnitude and the permittivity table cannot separate them. Values
+# are order-of-magnitude engineering estimates (one significant figure); what
+# matters is which side of lambda/16 = 0.24 mm a surface falls on.
+#
+# CONFIDENCE (high|medium|low) is carried into the feature block as
+# `frac_low_confidence`, so "does the result survive dropping every uncertain
+# constant?" is a filter over an existing column rather than a re-extraction.
+
+# VoD's ZF FRGen21 is a 77 GHz automotive radar. Single-valued deliberately:
+# sweeping 76->81 GHz moves concrete's |Gamma| from 0.392629 to 0.392610
+# (0.005%), so a frequency-dependent representation is unwarranted complexity.
+default_frequency_ghz: 77.0
+
+# COLUMN ORDER IS A CONTRACT. The per-candidate composition vector, every
+# cached sidecar and every trained checkpoint index materials by position, so
+# this list -- not the mapping below it -- defines the order. Appending a new
+# material means appending here too; reordering invalidates existing caches and
+# checkpoints and is checked against on load.
+order: [metal, glass, concrete, brick, asphalt, wood, soil,
+        vegetation, human_tissue, rubber, plastic]
+
+materials:
+
+  metal:
+    itu: metal
+    h_rms_m: 1.0e-5
+    confidence: high
+    source: "ITU-R P.2040-4 Table 3 (1-100 GHz); h_rms = painted sheet steel"
+
+  glass:
+    itu: glass
+    h_rms_m: 1.0e-6
+    confidence: high
+    source: "ITU-R P.2040-4 Table 3 (0.1-100 GHz); h_rms = float glass"
+
+  concrete:
+    itu: concrete
+    h_rms_m: 5.0e-4
+    confidence: high
+    source: "ITU-R P.2040-4 Table 3 (1-100 GHz); h_rms = cast/rendered finish"
+
+  brick:
+    itu: brick
+    h_rms_m: 1.0e-3
+    confidence: medium
+    source: >-
+      ITU-R P.2040-4 Table 3. 77 GHz falls in the GAP between P.2040's 1-40 and
+      110-330 GHz brick campaigns; the nearer (110-330) fit is used. The other
+      fit would give sigma 0.048 vs 0.552 S/m, so this constant is genuinely
+      uncertain at automotive frequency.
+
+  asphalt:
+    itu: asphalt_concrete
+    h_rms_m: 1.0e-3
+    confidence: medium
+    source: >-
+      ITU-R P.2040-4 Table 3 (1-40 GHz, EXTRAPOLATED to 77);
+      h_rms = dense-graded wearing course
+
+  wood:
+    itu: wood
+    h_rms_m: 2.0e-4
+    confidence: high
+    source: "ITU-R P.2040-4 Table 3 (0.001-100 GHz)"
+
+  soil:
+    itu: medium_dry_ground
+    h_rms_m: 3.0e-3
+    confidence: low
+    source: >-
+      ITU-R P.2040-4 Table 3 (1-10 GHz, EXTRAPOLATED HARD to 77);
+      moisture-dependent and effectively unconstrained at 77 GHz
+
+  # ------------------------------------------------ outside ITU-R P.2040 ----
+  # P.2040 is a BUILDING MATERIALS Recommendation. The four below are needed by
+  # a street scene and are not in it. Each is declared with a citation and LOW
+  # confidence; none is silently added to the ITU table above.
+
+  vegetation:
+    eps_real: 1.8
+    sigma: 0.35
+    h_rms_m: 1.0e-2
+    confidence: low
+    source: >-
+      NOT IN P.2040. Bulk-canopy effective permittivity, mm-wave propagation
+      literature; P.833 treats vegetation as a volumetric attenuator, not a
+      Fresnel half-space. WEAKEST CONSTANT HERE, and vegetation is one of the
+      largest background classes in an urban driving scene (18% of matched
+      candidate points).
+
+  human_tissue:
+    eps_real: 5.8
+    sigma: 35.0
+    h_rms_m: 1.0e-3
+    confidence: low
+    source: >-
+      NOT IN P.2040. Skin at 77 GHz, water-dominated; Gabriel dielectric
+      database extrapolated above its 20 GHz fit range.
+
+  rubber:
+    eps_real: 3.2
+    sigma: 0.9
+    h_rms_m: 5.0e-4
+    confidence: low
+    source: >-
+      NOT IN P.2040. Carbon-black-loaded tyre rubber, mm-wave measurement
+      literature; lossy and strongly absorbing.
+
+  plastic:
+    eps_real: 2.6
+    sigma: 0.02
+    h_rms_m: 5.0e-5
+    confidence: low
+    source: >-
+      NOT IN P.2040. Generic automotive/road-furniture polymer, bracketed by
+      P.2040 clear_acrylic (2.58) and plasterboard (2.73).
