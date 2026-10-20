@@ -1,0 +1,582 @@
+/DATA1/Vivek/Sim2Real_RADAR/Code/physradar/third_party/OpenPCDet/tools/../pcdet/utils/loss_utils.py:152: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @torch.cuda.amp.custom_fwd(cast_inputs=torch.float16)
+/DATA1/Vivek/Sim2Real_RADAR/Code/physradar/third_party/OpenPCDet/tools/../pcdet/datasets/__init__.py:24: UserWarning: Argo2Dataset unavailable (RuntimeError); unused here.
+  _w.warn(f"Argo2Dataset unavailable ({type(_argo2_exc).__name__}); unused here.")
+2026-09-06 12:31:17,372   INFO  **********************Start logging**********************
+2026-09-06 12:31:17,372   INFO  CUDA_VISIBLE_DEVICES=0
+2026-09-06 12:31:17,372   INFO  Training with a single process
+2026-09-06 12:31:17,372   INFO  cfg_file         cfgs/kitti_models/pointpillar_vod_radar_pge.yaml
+2026-09-06 12:31:17,372   INFO  batch_size       8
+2026-09-06 12:31:17,372   INFO  epochs           40
+2026-09-06 12:31:17,372   INFO  workers          4
+2026-09-06 12:31:17,372   INFO  extra_tag        pge_B_long_s1
+2026-09-06 12:31:17,372   INFO  ckpt             None
+2026-09-06 12:31:17,372   INFO  pretrained_model None
+2026-09-06 12:31:17,373   INFO  launcher         none
+2026-09-06 12:31:17,373   INFO  tcp_port         18888
+2026-09-06 12:31:17,373   INFO  sync_bn          False
+2026-09-06 12:31:17,373   INFO  fix_random_seed  True
+2026-09-06 12:31:17,373   INFO  seed             1
+2026-09-06 12:31:17,373   INFO  ckpt_save_interval 1
+2026-09-06 12:31:17,373   INFO  local_rank       None
+2026-09-06 12:31:17,373   INFO  max_ckpt_save_num 30
+2026-09-06 12:31:17,373   INFO  merge_all_iters_to_one_epoch False
+2026-09-06 12:31:17,373   INFO  set_cfgs         ['DATA_CONFIG.DATA_PATH', '/DATA1/Vivek/Sim2Real_RADAR/Code/physradar/data/pcdet/B_limited_real']
+2026-09-06 12:31:17,373   INFO  max_waiting_mins 0
+2026-09-06 12:31:17,373   INFO  start_epoch      0
+2026-09-06 12:31:17,373   INFO  num_epochs_to_eval 0
+2026-09-06 12:31:17,373   INFO  save_to_file     False
+2026-09-06 12:31:17,373   INFO  use_tqdm_to_record False
+2026-09-06 12:31:17,373   INFO  logger_iter_interval 50
+2026-09-06 12:31:17,373   INFO  ckpt_save_time_interval 300
+2026-09-06 12:31:17,373   INFO  wo_gpu_stat      False
+2026-09-06 12:31:17,373   INFO  use_amp          False
+2026-09-06 12:31:17,373   INFO  cfg.ROOT_DIR: /DATA1/Vivek/Sim2Real_RADAR/Code/physradar/third_party/OpenPCDet
+2026-09-06 12:31:17,374   INFO  cfg.LOCAL_RANK: 0
+2026-09-06 12:31:17,374   INFO  cfg.CLASS_NAMES: ['Car', 'Pedestrian', 'Cyclist']
+2026-09-06 12:31:17,374   INFO  ----------- DATA_CONFIG -----------
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.DATASET: KittiDataset
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.DATA_PATH: /DATA1/Vivek/Sim2Real_RADAR/Code/physradar/data/pcdet/B_limited_real
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.POINT_CLOUD_RANGE: [0, -25.6, -3, 51.2, 25.6, 2]
+2026-09-06 12:31:17,374   INFO  ----------- DATA_SPLIT -----------
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.DATA_SPLIT.train: train
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.DATA_SPLIT.test: val
+2026-09-06 12:31:17,374   INFO  ----------- INFO_PATH -----------
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.INFO_PATH.train: ['kitti_infos_train.pkl']
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.INFO_PATH.test: ['kitti_infos_val.pkl']
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.FOV_POINTS_ONLY: True
+2026-09-06 12:31:17,374   INFO  ----------- DATA_AUGMENTOR -----------
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.DATA_AUGMENTOR.DISABLE_AUG_LIST: ['random_world_rotation', 'gt_sampling']
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.DATA_AUGMENTOR.AUG_CONFIG_LIST: [{'NAME': 'random_world_flip', 'ALONG_AXIS_LIST': ['x']}, {'NAME': 'random_world_scaling', 'WORLD_SCALE_RANGE': [0.95, 1.05]}]
+2026-09-06 12:31:17,374   INFO  ----------- POINT_FEATURE_ENCODING -----------
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.encoding_type: absolute_coordinates_encoding
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.used_feature_list: ['x', 'y', 'z', 'rcs', 'v_r', 'v_r_comp', 'time']
+2026-09-06 12:31:17,374   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.src_feature_list: ['x', 'y', 'z', 'rcs', 'v_r', 'v_r_comp', 'time']
+2026-09-06 12:31:17,375   INFO  cfg.DATA_CONFIG.DATA_PROCESSOR: [{'NAME': 'mask_points_and_boxes_outside_range', 'REMOVE_OUTSIDE_BOXES': True}, {'NAME': 'shuffle_points', 'SHUFFLE_ENABLED': {'train': True, 'test': False}}, {'NAME': 'transform_points_to_voxels', 'VOXEL_SIZE': [0.16, 0.16, 5], 'MAX_POINTS_PER_VOXEL': 10, 'MAX_NUMBER_OF_VOXELS': {'train': 16000, 'test': 40000}}]
+2026-09-06 12:31:17,375   INFO  cfg.DATA_CONFIG._BASE_CONFIG_: cfgs/dataset_configs/vod_radar_dataset.yaml
+2026-09-06 12:31:17,375   INFO  ----------- MODEL -----------
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.NAME: PointPillar
+2026-09-06 12:31:17,375   INFO  ----------- VFE -----------
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.NAME: Radar7PillarVFE
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.USE_XYZ: True
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.USE_RCS: True
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.USE_VR: True
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.USE_VR_COMP: False
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.USE_TIME: False
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.USE_NORM: True
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.USE_ELEVATION: True
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.USE_DISTANCE: False
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.VFE.NUM_FILTERS: [64]
+2026-09-06 12:31:17,375   INFO  ----------- MAP_TO_BEV -----------
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.MAP_TO_BEV.NAME: PointGaussianScatter
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.MAP_TO_BEV.NUM_BEV_FEATURES: 64
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.MAP_TO_BEV.KERNEL_RADIUS: 2
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.MAP_TO_BEV.MIN_SIGMA: 0.5
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.MAP_TO_BEV.MAX_SIGMA: 2.0
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.MAP_TO_BEV.SHAPE_HIDDEN: 32
+2026-09-06 12:31:17,375   INFO  ----------- BACKBONE_2D -----------
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.BACKBONE_2D.NAME: BaseBEVBackbone
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.BACKBONE_2D.LAYER_NUMS: [3, 5, 5]
+2026-09-06 12:31:17,375   INFO  cfg.MODEL.BACKBONE_2D.LAYER_STRIDES: [2, 2, 2]
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.BACKBONE_2D.NUM_FILTERS: [64, 128, 256]
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.BACKBONE_2D.UPSAMPLE_STRIDES: [1, 2, 4]
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.BACKBONE_2D.NUM_UPSAMPLE_FILTERS: [128, 128, 128]
+2026-09-06 12:31:17,376   INFO  ----------- DENSE_HEAD -----------
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.NAME: AnchorHeadSingle
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.CLASS_AGNOSTIC: False
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.USE_DIRECTION_CLASSIFIER: True
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.DIR_OFFSET: 0.78539
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.DIR_LIMIT_OFFSET: 0.0
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.NUM_DIR_BINS: 2
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.ANCHOR_GENERATOR_CONFIG: [{'class_name': 'Car', 'anchor_sizes': [[3.9, 1.6, 1.56]], 'anchor_rotations': [0, 1.57], 'anchor_bottom_heights': [-1.78], 'align_center': False, 'feature_map_stride': 2, 'matched_threshold': 0.6, 'unmatched_threshold': 0.45}, {'class_name': 'Pedestrian', 'anchor_sizes': [[0.8, 0.6, 1.73]], 'anchor_rotations': [0, 1.57], 'anchor_bottom_heights': [-0.6], 'align_center': False, 'feature_map_stride': 2, 'matched_threshold': 0.5, 'unmatched_threshold': 0.35}, {'class_name': 'Cyclist', 'anchor_sizes': [[1.76, 0.6, 1.73]], 'anchor_rotations': [0, 1.57], 'anchor_bottom_heights': [-0.6], 'align_center': False, 'feature_map_stride': 2, 'matched_threshold': 0.5, 'unmatched_threshold': 0.35}]
+2026-09-06 12:31:17,376   INFO  ----------- TARGET_ASSIGNER_CONFIG -----------
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.NAME: AxisAlignedTargetAssigner
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.POS_FRACTION: -1.0
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.SAMPLE_SIZE: 512
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.NORM_BY_NUM_EXAMPLES: False
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.MATCH_HEIGHT: False
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.BOX_CODER: ResidualCoder
+2026-09-06 12:31:17,376   INFO  ----------- LOSS_CONFIG -----------
+2026-09-06 12:31:17,376   INFO  ----------- LOSS_WEIGHTS -----------
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.cls_weight: 1.0
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.loc_weight: 2.0
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.dir_weight: 0.2
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.code_weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+2026-09-06 12:31:17,376   INFO  ----------- POST_PROCESSING -----------
+2026-09-06 12:31:17,376   INFO  cfg.MODEL.POST_PROCESSING.RECALL_THRESH_LIST: [0.3, 0.5, 0.7]
+2026-09-06 12:31:17,377   INFO  cfg.MODEL.POST_PROCESSING.SCORE_THRESH: 0.1
+2026-09-06 12:31:17,377   INFO  cfg.MODEL.POST_PROCESSING.OUTPUT_RAW_SCORE: False
+2026-09-06 12:31:17,377   INFO  cfg.MODEL.POST_PROCESSING.EVAL_METRIC: kitti
+2026-09-06 12:31:17,377   INFO  ----------- NMS_CONFIG -----------
+2026-09-06 12:31:17,377   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.MULTI_CLASSES_NMS: False
+2026-09-06 12:31:17,377   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_TYPE: nms_gpu
+2026-09-06 12:31:17,377   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_THRESH: 0.01
+2026-09-06 12:31:17,377   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_PRE_MAXSIZE: 4096
+2026-09-06 12:31:17,377   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_POST_MAXSIZE: 500
+2026-09-06 12:31:17,377   INFO  ----------- OPTIMIZATION -----------
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.BATCH_SIZE_PER_GPU: 16
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.NUM_EPOCHS: 80
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.OPTIMIZER: adam_onecycle
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.LR: 0.003
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.WEIGHT_DECAY: 0.01
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.MOMENTUM: 0.9
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.MOMS: [0.95, 0.85]
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.PCT_START: 0.4
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.DIV_FACTOR: 10
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.DECAY_STEP_LIST: [35, 45]
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.LR_DECAY: 0.1
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.LR_CLIP: 1e-07
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.LR_WARMUP: False
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.WARMUP_EPOCH: 1
+2026-09-06 12:31:17,377   INFO  cfg.OPTIMIZATION.GRAD_NORM_CLIP: 10
+2026-09-06 12:31:17,377   INFO  cfg.TAG: pointpillar_vod_radar_pge
+2026-09-06 12:31:17,377   INFO  cfg.EXP_GROUP_PATH: kitti_models
+2026-09-06 12:31:17,382   INFO  ----------- Create dataloader & network & optimizer -----------
+2026-09-06 12:31:17,382   INFO  Loading KITTI dataset
+2026-09-06 12:31:17,415   INFO  Total samples for KITTI dataset: 1000
+/DATA1/Vivek/Sim2Real_RADAR/Code/physradar/.venv_pcdet/lib/python3.11/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/TensorShape.cpp:4215.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+2026-09-06 12:31:17,745   INFO  ----------- Model PointPillar created, param count: 4837131 -----------
+2026-09-06 12:31:17,745   INFO  PointPillar(
+  (vfe): Radar7PillarVFE(
+    (pfn_layers): ModuleList(
+      (0): PFNLayer(
+        (linear): Linear(in_features=11, out_features=64, bias=False)
+        (norm): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+      )
+    )
+  )
+  (backbone_3d): None
+  (map_to_bev_module): PointGaussianScatter(
+    (shape_head): Sequential(
+      (0): Linear(in_features=64, out_features=32, bias=True)
+      (1): ReLU(inplace=True)
+      (2): Linear(in_features=32, out_features=3, bias=True)
+    )
+  )
+  (pfe): None
+  (backbone_2d): BaseBEVBackbone(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d((1, 1, 1, 1))
+        (1): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (3): ReLU()
+        (4): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (6): ReLU()
+        (7): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (9): ReLU()
+        (10): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (12): ReLU()
+      )
+      (1): Sequential(
+        (0): ZeroPad2d((1, 1, 1, 1))
+        (1): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (3): ReLU()
+        (4): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (6): ReLU()
+        (7): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (9): ReLU()
+        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (12): ReLU()
+        (13): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (15): ReLU()
+        (16): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (18): ReLU()
+      )
+      (2): Sequential(
+        (0): ZeroPad2d((1, 1, 1, 1))
+        (1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (3): ReLU()
+        (4): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (6): ReLU()
+        (7): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (9): ReLU()
+        (10): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (12): ReLU()
+        (13): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (15): ReLU()
+        (16): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (18): ReLU()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): ConvTranspose2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): Sequential(
+        (0): ConvTranspose2d(128, 128, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (2): Sequential(
+        (0): ConvTranspose2d(256, 128, kernel_size=(4, 4), stride=(4, 4), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+  )
+  (dense_head): AnchorHeadSingle(
+    (cls_loss_func): SigmoidFocalClassificationLoss()
+    (reg_loss_func): WeightedSmoothL1Loss()
+    (dir_loss_func): WeightedCrossEntropyLoss()
+    (conv_cls): Conv2d(384, 18, kernel_size=(1, 1), stride=(1, 1))
+    (conv_box): Conv2d(384, 42, kernel_size=(1, 1), stride=(1, 1))
+    (conv_dir_cls): Conv2d(384, 12, kernel_size=(1, 1), stride=(1, 1))
+  )
+  (point_head): None
+  (roi_head): None
+)
+2026-09-06 12:31:17,747   INFO  **********************Start training kitti_models/pointpillar_vod_radar_pge(pge_B_long_s1)**********************
+number of point features used: 11
+epochs:   0%|          | 0/40 [00:00<?, ?it/s]/DATA1/Vivek/Sim2Real_RADAR/Code/physradar/third_party/OpenPCDet/tools/train_utils/train_utils.py:21: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=use_amp, init_scale=optim_cfg.get('LOSS_SCALE_FP16', 2.0**16))
+
+train:   0%|          | 0/125 [00:00<?, ?it/s][A/DATA1/Vivek/Sim2Real_RADAR/Code/physradar/third_party/OpenPCDet/tools/train_utils/train_utils.py:55: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=use_amp):
+2026-09-06 12:31:18,840   INFO  Train:    1/40 (  2%) [   0/125 (  0%)]  Loss: 4.604 (4.60)  LR: 3.000e-04  Time cost: 00:00/01:51 [00:01/1:14:24]  Acc_iter 1           Data time: 0.02(0.02)  Forward time: 0.87(0.87)  Batch time: 0.89(0.89)
+2026-09-06 12:31:27,873   INFO  Train:    1/40 (  2%) [  49/125 ( 39%)]  Loss: 2.378 (2.43)  LR: 3.040e-04  Time cost: 00:09/00:15 [00:10/16:22]  Acc_iter 50          Data time: 0.06(0.06)  Forward time: 0.12(0.14)  Batch time: 0.18(0.20)
+2026-09-06 12:31:36,620   INFO  Train:    1/40 (  2%) [  99/125 ( 79%)]  Loss: 2.101 (2.27)  LR: 3.163e-04  Time cost: 00:18/00:04 [00:18/15:15]  Acc_iter 100         Data time: 0.06(0.06)  Forward time: 0.11(0.13)  Batch time: 0.17(0.19)
+2026-09-06 12:31:41,024   INFO  Train:    1/40 (  2%) [ 124/125 ( 99%)]  Loss: 2.088 (2.27)  LR: 3.255e-04  Time cost: 00:23/00:00 [00:23/15:00]  Acc_iter 125         Data time: 0.05(0.06)  Forward time: 0.12(0.13)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:   2%|▎         | 1/40 [00:23<15:12, 23.40s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:31:41,492   INFO  Train:    2/40 (  5%) [   0/125 (  0%)]  Loss: 2.135 (2.14)  LR: 3.259e-04  Time cost: 00:00/00:28 [00:23/18:25]  Acc_iter 126         Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:31:45,702   INFO  Train:    2/40 (  5%) [  24/125 ( 19%)]  Loss: 1.994 (1.99)  LR: 3.368e-04  Time cost: 00:04/00:17 [00:27/14:20]  Acc_iter 150         Data time: 0.05(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:31:45,705   INFO  
+2026-09-06 12:31:54,684   INFO  Train:    2/40 (  5%) [  74/125 ( 59%)]  Loss: 1.767 (2.01)  LR: 3.654e-04  Time cost: 00:13/00:09 [00:36/14:18]  Acc_iter 200         Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:32:03,575   INFO  Train:    2/40 (  5%) [ 124/125 ( 99%)]  Loss: 2.098 (2.02)  LR: 4.020e-04  Time cost: 00:22/00:00 [00:45/14:07]  Acc_iter 250         Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:   5%|▌         | 2/40 [00:45<14:30, 22.91s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:32:04,068   INFO  Train:    3/40 (  8%) [   0/125 (  0%)]  Loss: 1.721 (1.72)  LR: 4.028e-04  Time cost: 00:00/00:28 [00:46/18:13]  Acc_iter 251         Data time: 0.04(0.04)  Forward time: 0.13(0.13)  Batch time: 0.18(0.18)
+2026-09-06 12:32:13,453   INFO  Train:    3/40 (  8%) [  49/125 ( 39%)]  Loss: 1.741 (1.92)  LR: 4.462e-04  Time cost: 00:09/00:14 [00:55/15:03]  Acc_iter 300         Data time: 0.07(0.06)  Forward time: 0.12(0.13)  Batch time: 0.19(0.19)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:32:13,457   INFO  
+2026-09-06 12:32:22,436   INFO  Train:    3/40 (  8%) [  99/125 ( 79%)]  Loss: 1.758 (1.92)  LR: 4.978e-04  Time cost: 00:18/00:04 [01:04/14:25]  Acc_iter 350         Data time: 0.06(0.06)  Forward time: 0.11(0.13)  Batch time: 0.17(0.19)
+2026-09-06 12:32:26,988   INFO  Train:    3/40 (  8%) [ 124/125 ( 99%)]  Loss: 1.824 (1.92)  LR: 5.263e-04  Time cost: 00:23/00:00 [01:09/14:16]  Acc_iter 375         Data time: 0.05(0.06)  Forward time: 0.12(0.13)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:   8%|▊         | 3/40 [01:09<14:16, 23.15s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:32:27,530   INFO  Train:    4/40 ( 10%) [   0/125 (  0%)]  Loss: 1.725 (1.73)  LR: 5.275e-04  Time cost: 00:00/00:29 [01:09/18:01]  Acc_iter 376         Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.18(0.18)
+2026-09-06 12:32:31,864   INFO  Train:    4/40 ( 10%) [  24/125 ( 19%)]  Loss: 1.883 (1.87)  LR: 5.566e-04  Time cost: 00:04/00:18 [01:14/14:00]  Acc_iter 400         Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:32:40,801   INFO  Train:    4/40 ( 10%) [  74/125 ( 59%)]  Loss: 1.808 (1.87)  LR: 6.221e-04  Time cost: 00:13/00:09 [01:23/13:39]  Acc_iter 450         Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:32:40,805   INFO  
+2026-09-06 12:32:49,876   INFO  Train:    4/40 ( 10%) [ 124/125 ( 99%)]  Loss: 1.814 (1.90)  LR: 6.939e-04  Time cost: 00:22/00:00 [01:32/13:33]  Acc_iter 500         Data time: 0.06(0.06)  Forward time: 0.16(0.12)  Batch time: 0.22(0.18)
+
+                                              [Aepochs:  10%|█         | 4/40 [01:32<13:49, 23.04s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:32:50,394   INFO  Train:    5/40 ( 12%) [   0/125 (  0%)]  Loss: 2.476 (2.48)  LR: 6.954e-04  Time cost: 00:00/00:27 [01:32/16:41]  Acc_iter 501         Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:32:59,659   INFO  Train:    5/40 ( 12%) [  49/125 ( 39%)]  Loss: 2.162 (1.88)  LR: 7.716e-04  Time cost: 00:09/00:14 [01:41/14:04]  Acc_iter 550         Data time: 0.06(0.06)  Forward time: 0.14(0.13)  Batch time: 0.20(0.19)
+2026-09-06 12:33:09,331   INFO  Train:    5/40 ( 12%) [  99/125 ( 79%)]  Loss: 2.155 (1.91)  LR: 8.548e-04  Time cost: 00:19/00:04 [01:51/14:03]  Acc_iter 600         Data time: 0.06(0.06)  Forward time: 0.13(0.13)  Batch time: 0.19(0.19)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:33:09,334   INFO  
+2026-09-06 12:33:14,249   INFO  Train:    5/40 ( 12%) [ 124/125 ( 99%)]  Loss: 2.020 (1.91)  LR: 8.982e-04  Time cost: 00:24/00:00 [01:56/14:02]  Acc_iter 625         Data time: 0.05(0.06)  Forward time: 0.15(0.13)  Batch time: 0.20(0.19)
+
+                                              [Aepochs:  12%|█▎        | 5/40 [01:56<13:43, 23.52s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:33:14,765   INFO  Train:    6/40 ( 15%) [   0/125 (  0%)]  Loss: 1.449 (1.45)  LR: 9.000e-04  Time cost: 00:00/00:29 [01:57/17:25]  Acc_iter 626         Data time: 0.03(0.03)  Forward time: 0.15(0.15)  Batch time: 0.18(0.18)
+2026-09-06 12:33:19,209   INFO  Train:    6/40 ( 15%) [  24/125 ( 19%)]  Loss: 1.264 (1.85)  LR: 9.428e-04  Time cost: 00:04/00:18 [02:01/13:35]  Acc_iter 650         Data time: 0.06(0.06)  Forward time: 0.15(0.12)  Batch time: 0.20(0.19)
+2026-09-06 12:33:28,307   INFO  Train:    6/40 ( 15%) [  74/125 ( 59%)]  Loss: 2.229 (1.87)  LR: 1.035e-03  Time cost: 00:13/00:09 [02:10/13:10]  Acc_iter 700         Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:33:37,643   INFO  Train:    6/40 ( 15%) [ 124/125 ( 99%)]  Loss: 1.730 (1.91)  LR: 1.131e-03  Time cost: 00:23/00:00 [02:19/13:06]  Acc_iter 750         Data time: 0.06(0.06)  Forward time: 0.14(0.13)  Batch time: 0.19(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:33:37,647   INFO  
+
+                                              [Aepochs:  15%|█▌        | 6/40 [02:20<13:18, 23.49s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:33:38,174   INFO  Train:    7/40 ( 18%) [   0/125 (  0%)]  Loss: 1.944 (1.94)  LR: 1.133e-03  Time cost: 00:00/00:28 [02:20/16:02]  Acc_iter 751         Data time: 0.04(0.04)  Forward time: 0.13(0.13)  Batch time: 0.17(0.17)
+2026-09-06 12:33:46,969   INFO  Train:    7/40 ( 18%) [  49/125 ( 39%)]  Loss: 1.634 (1.90)  LR: 1.231e-03  Time cost: 00:09/00:13 [02:29/12:37]  Acc_iter 800         Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:33:55,933   INFO  Train:    7/40 ( 18%) [  99/125 ( 79%)]  Loss: 2.163 (1.90)  LR: 1.333e-03  Time cost: 00:17/00:04 [02:38/12:26]  Acc_iter 850         Data time: 0.05(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:34:00,438   INFO  Train:    7/40 ( 18%) [ 124/125 ( 99%)]  Loss: 1.944 (1.87)  LR: 1.385e-03  Time cost: 00:22/00:00 [02:42/12:22]  Acc_iter 875         Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  18%|█▊        | 7/40 [02:42<12:47, 23.25s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:34:00,976   INFO  Train:    8/40 ( 20%) [   0/125 (  0%)]  Loss: 1.912 (1.91)  LR: 1.387e-03  Time cost: 00:00/00:30 [02:43/16:42]  Acc_iter 876         Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.18(0.18)
+2026-09-06 12:34:05,372   INFO  Train:    8/40 ( 20%) [  24/125 ( 19%)]  Loss: 2.295 (1.95)  LR: 1.437e-03  Time cost: 00:04/00:18 [02:47/12:40]  Acc_iter 900         Data time: 0.06(0.06)  Forward time: 0.12(0.13)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:34:05,376   INFO  
+2026-09-06 12:34:14,330   INFO  Train:    8/40 ( 20%) [  74/125 ( 59%)]  Loss: 1.869 (1.90)  LR: 1.542e-03  Time cost: 00:13/00:09 [02:56/12:14]  Acc_iter 950         Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.19(0.18)
+2026-09-06 12:34:23,333   INFO  Train:    8/40 ( 20%) [ 124/125 ( 99%)]  Loss: 1.735 (1.87)  LR: 1.648e-03  Time cost: 00:22/00:00 [03:05/12:03]  Acc_iter 1000        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  20%|██        | 8/40 [03:05<12:20, 23.14s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:34:23,843   INFO  Train:    9/40 ( 22%) [   0/125 (  0%)]  Loss: 2.077 (2.08)  LR: 1.650e-03  Time cost: 00:00/00:28 [03:06/15:23]  Acc_iter 1001        Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.18(0.18)
+2026-09-06 12:34:32,632   INFO  Train:    9/40 ( 22%) [  49/125 ( 39%)]  Loss: 2.051 (1.83)  LR: 1.754e-03  Time cost: 00:09/00:13 [03:14/11:52]  Acc_iter 1050        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:34:32,637   INFO  
+2026-09-06 12:34:41,654   INFO  Train:    9/40 ( 22%) [  99/125 ( 79%)]  Loss: 1.492 (1.83)  LR: 1.859e-03  Time cost: 00:18/00:04 [03:23/11:43]  Acc_iter 1100        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.19(0.18)
+2026-09-06 12:34:46,159   INFO  Train:    9/40 ( 22%) [ 124/125 ( 99%)]  Loss: 2.127 (1.84)  LR: 1.911e-03  Time cost: 00:22/00:00 [03:28/11:39]  Acc_iter 1125        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  22%|██▎       | 9/40 [03:28<11:55, 23.07s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:34:46,767   INFO  Train:   10/40 ( 25%) [   0/125 (  0%)]  Loss: 1.829 (1.83)  LR: 1.913e-03  Time cost: 00:00/00:30 [03:29/15:32]  Acc_iter 1126        Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.18(0.18)
+2026-09-06 12:34:51,118   INFO  Train:   10/40 ( 25%) [  24/125 ( 19%)]  Loss: 2.282 (1.87)  LR: 1.963e-03  Time cost: 00:04/00:18 [03:33/11:47]  Acc_iter 1150        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:35:00,041   INFO  Train:   10/40 ( 25%) [  74/125 ( 59%)]  Loss: 1.761 (1.84)  LR: 2.065e-03  Time cost: 00:13/00:09 [03:42/11:24]  Acc_iter 1200        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:35:00,044   INFO  
+2026-09-06 12:35:08,868   INFO  Train:   10/40 ( 25%) [ 124/125 ( 99%)]  Loss: 1.911 (1.84)  LR: 2.165e-03  Time cost: 00:22/00:00 [03:51/11:10]  Acc_iter 1250        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  25%|██▌       | 10/40 [03:51<11:27, 22.93s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:35:09,359   INFO  Train:   11/40 ( 28%) [   0/125 (  0%)]  Loss: 1.471 (1.47)  LR: 2.167e-03  Time cost: 00:00/00:26 [03:51/13:13]  Acc_iter 1251        Data time: 0.03(0.03)  Forward time: 0.13(0.13)  Batch time: 0.16(0.16)
+2026-09-06 12:35:17,991   INFO  Train:   11/40 ( 28%) [  49/125 ( 39%)]  Loss: 2.156 (1.84)  LR: 2.261e-03  Time cost: 00:08/00:13 [04:00/10:54]  Acc_iter 1300        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:35:26,870   INFO  Train:   11/40 ( 28%) [  99/125 ( 79%)]  Loss: 1.678 (1.83)  LR: 2.354e-03  Time cost: 00:17/00:04 [04:09/10:47]  Acc_iter 1350        Data time: 0.05(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:35:26,874   INFO  
+2026-09-06 12:35:31,414   INFO  Train:   11/40 ( 28%) [ 124/125 ( 99%)]  Loss: 1.646 (1.79)  LR: 2.398e-03  Time cost: 00:22/00:00 [04:13/10:45]  Acc_iter 1375        Data time: 0.07(0.06)  Forward time: 0.12(0.12)  Batch time: 0.19(0.18)
+
+                                              [Aepochs:  28%|██▊       | 11/40 [04:13<11:01, 22.81s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:35:31,922   INFO  Train:   12/40 ( 30%) [   0/125 (  0%)]  Loss: 1.636 (1.64)  LR: 2.400e-03  Time cost: 00:00/00:29 [04:14/14:01]  Acc_iter 1376        Data time: 0.04(0.04)  Forward time: 0.13(0.13)  Batch time: 0.17(0.17)
+2026-09-06 12:35:36,210   INFO  Train:   12/40 ( 30%) [  24/125 ( 19%)]  Loss: 1.586 (1.76)  LR: 2.442e-03  Time cost: 00:04/00:18 [04:18/10:51]  Acc_iter 1400        Data time: 0.07(0.06)  Forward time: 0.12(0.12)  Batch time: 0.19(0.18)
+2026-09-06 12:35:44,911   INFO  Train:   12/40 ( 30%) [  74/125 ( 59%)]  Loss: 2.046 (1.83)  LR: 2.525e-03  Time cost: 00:13/00:08 [04:27/10:25]  Acc_iter 1450        Data time: 0.07(0.06)  Forward time: 0.11(0.11)  Batch time: 0.18(0.18)
+2026-09-06 12:35:53,707   INFO  Train:   12/40 ( 30%) [ 124/125 ( 99%)]  Loss: 1.522 (1.82)  LR: 2.603e-03  Time cost: 00:22/00:00 [04:35/10:16]  Acc_iter 1500        Data time: 0.06(0.06)  Forward time: 0.12(0.11)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:35:53,711   INFO  
+
+                                              [Aepochs:  30%|███       | 12/40 [04:36<10:34, 22.67s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:35:54,258   INFO  Train:   13/40 ( 32%) [   0/125 (  0%)]  Loss: 1.480 (1.48)  LR: 2.605e-03  Time cost: 00:00/00:29 [04:36/13:57]  Acc_iter 1501        Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.19(0.19)
+2026-09-06 12:36:03,027   INFO  Train:   13/40 ( 32%) [  49/125 ( 39%)]  Loss: 1.590 (1.77)  LR: 2.675e-03  Time cost: 00:09/00:13 [04:45/10:21]  Acc_iter 1550        Data time: 0.05(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:36:12,079   INFO  Train:   13/40 ( 32%) [  99/125 ( 79%)]  Loss: 1.588 (1.73)  LR: 2.741e-03  Time cost: 00:18/00:04 [04:54/10:14]  Acc_iter 1600        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:36:16,579   INFO  Train:   13/40 ( 32%) [ 124/125 ( 99%)]  Loss: 1.721 (1.75)  LR: 2.771e-03  Time cost: 00:22/00:00 [04:58/10:09]  Acc_iter 1625        Data time: 0.05(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  32%|███▎      | 13/40 [04:58<10:13, 22.72s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:36:17,102   INFO  Train:   14/40 ( 35%) [   0/125 (  0%)]  Loss: 1.382 (1.38)  LR: 2.772e-03  Time cost: 00:00/00:28 [04:59/12:52]  Acc_iter 1626        Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.18(0.18)
+2026-09-06 12:36:21,425   INFO  Train:   14/40 ( 35%) [  24/125 ( 19%)]  Loss: 2.347 (1.74)  LR: 2.800e-03  Time cost: 00:04/00:18 [05:03/10:10]  Acc_iter 1650        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.19(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:36:21,428   INFO  
+2026-09-06 12:36:30,371   INFO  Train:   14/40 ( 35%) [  74/125 ( 59%)]  Loss: 2.168 (1.74)  LR: 2.852e-03  Time cost: 00:13/00:09 [05:12/09:54]  Acc_iter 1700        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:36:39,307   INFO  Train:   14/40 ( 35%) [ 124/125 ( 99%)]  Loss: 1.894 (1.74)  LR: 2.896e-03  Time cost: 00:22/00:00 [05:21/09:43]  Acc_iter 1750        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  35%|███▌      | 14/40 [05:21<09:50, 22.72s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:36:39,830   INFO  Train:   15/40 ( 38%) [   0/125 (  0%)]  Loss: 2.142 (2.14)  LR: 2.897e-03  Time cost: 00:00/00:28 [05:22/12:09]  Acc_iter 1751        Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:36:48,441   INFO  Train:   15/40 ( 38%) [  49/125 ( 39%)]  Loss: 1.782 (1.73)  LR: 2.933e-03  Time cost: 00:08/00:13 [05:30/09:25]  Acc_iter 1800        Data time: 0.07(0.06)  Forward time: 0.10(0.11)  Batch time: 0.17(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:36:48,444   INFO  
+2026-09-06 12:36:57,336   INFO  Train:   15/40 ( 38%) [  99/125 ( 79%)]  Loss: 2.241 (1.73)  LR: 2.962e-03  Time cost: 00:17/00:04 [05:39/09:18]  Acc_iter 1850        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:37:01,833   INFO  Train:   15/40 ( 38%) [ 124/125 ( 99%)]  Loss: 1.353 (1.72)  LR: 2.974e-03  Time cost: 00:22/00:00 [05:44/09:15]  Acc_iter 1875        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  38%|███▊      | 15/40 [05:44<09:26, 22.67s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:37:02,363   INFO  Train:   16/40 ( 40%) [   0/125 (  0%)]  Loss: 1.652 (1.65)  LR: 2.974e-03  Time cost: 00:00/00:29 [05:44/12:18]  Acc_iter 1876        Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.18(0.18)
+2026-09-06 12:37:06,693   INFO  Train:   16/40 ( 40%) [  24/125 ( 19%)]  Loss: 1.602 (1.71)  LR: 2.983e-03  Time cost: 00:04/00:18 [05:48/09:26]  Acc_iter 1900        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:37:15,682   INFO  Train:   16/40 ( 40%) [  74/125 ( 59%)]  Loss: 1.769 (1.71)  LR: 2.996e-03  Time cost: 00:13/00:09 [05:57/09:11]  Acc_iter 1950        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:37:15,685   INFO  
+2026-09-06 12:37:24,673   INFO  Train:   16/40 ( 40%) [ 124/125 ( 99%)]  Loss: 2.244 (1.69)  LR: 3.000e-03  Time cost: 00:22/00:00 [06:06/09:01]  Acc_iter 2000        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.16(0.18)
+
+                                              [Aepochs:  40%|████      | 16/40 [06:07<09:05, 22.72s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:37:25,202   INFO  Train:   17/40 ( 42%) [   0/125 (  0%)]  Loss: 1.776 (1.78)  LR: 3.000e-03  Time cost: 00:00/00:28 [06:07/11:32]  Acc_iter 2001        Data time: 0.03(0.03)  Forward time: 0.15(0.15)  Batch time: 0.17(0.17)
+2026-09-06 12:37:34,070   INFO  Train:   17/40 ( 42%) [  49/125 ( 39%)]  Loss: 1.756 (1.67)  LR: 2.998e-03  Time cost: 00:09/00:13 [06:16/08:57]  Acc_iter 2050        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:37:42,988   INFO  Train:   17/40 ( 42%) [  99/125 ( 79%)]  Loss: 1.542 (1.69)  LR: 2.992e-03  Time cost: 00:18/00:04 [06:25/08:42]  Acc_iter 2100        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:37:42,992   INFO  
+2026-09-06 12:37:47,806   INFO  Train:   17/40 ( 42%) [ 124/125 ( 99%)]  Loss: 1.391 (1.67)  LR: 2.987e-03  Time cost: 00:22/00:00 [06:30/08:45]  Acc_iter 2125        Data time: 0.05(0.06)  Forward time: 0.15(0.12)  Batch time: 0.20(0.18)
+
+                                              [Aepochs:  42%|████▎     | 17/40 [06:30<08:45, 22.84s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:37:48,323   INFO  Train:   18/40 ( 45%) [   0/125 (  0%)]  Loss: 1.764 (1.76)  LR: 2.987e-03  Time cost: 00:00/00:27 [06:30/10:26]  Acc_iter 2126        Data time: 0.03(0.03)  Forward time: 0.13(0.13)  Batch time: 0.16(0.16)
+2026-09-06 12:37:52,545   INFO  Train:   18/40 ( 45%) [  24/125 ( 19%)]  Loss: 1.643 (1.63)  LR: 2.982e-03  Time cost: 00:04/00:17 [06:34/08:26]  Acc_iter 2150        Data time: 0.07(0.06)  Forward time: 0.11(0.11)  Batch time: 0.18(0.17)
+2026-09-06 12:38:01,490   INFO  Train:   18/40 ( 45%) [  74/125 ( 59%)]  Loss: 2.377 (1.68)  LR: 2.968e-03  Time cost: 00:13/00:09 [06:43/08:19]  Acc_iter 2200        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:38:10,470   INFO  Train:   18/40 ( 45%) [ 124/125 ( 99%)]  Loss: 2.289 (1.66)  LR: 2.949e-03  Time cost: 00:22/00:00 [06:52/08:12]  Acc_iter 2250        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:38:10,475   INFO  
+
+                                              [Aepochs:  45%|████▌     | 18/40 [06:52<08:21, 22.79s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:38:11,007   INFO  Train:   19/40 ( 48%) [   0/125 (  0%)]  Loss: 1.677 (1.68)  LR: 2.949e-03  Time cost: 00:00/00:29 [06:53/10:39]  Acc_iter 2251        Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.18(0.18)
+2026-09-06 12:38:19,791   INFO  Train:   19/40 ( 48%) [  49/125 ( 39%)]  Loss: 1.137 (1.59)  LR: 2.927e-03  Time cost: 00:09/00:13 [07:02/08:07]  Acc_iter 2300        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:38:28,666   INFO  Train:   19/40 ( 48%) [  99/125 ( 79%)]  Loss: 1.505 (1.60)  LR: 2.901e-03  Time cost: 00:17/00:04 [07:10/07:54]  Acc_iter 2350        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:38:33,215   INFO  Train:   19/40 ( 48%) [ 124/125 ( 99%)]  Loss: 1.376 (1.60)  LR: 2.886e-03  Time cost: 00:22/00:00 [07:15/07:51]  Acc_iter 2375        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  48%|████▊     | 19/40 [07:15<07:58, 22.78s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:38:33,741   INFO  Train:   20/40 ( 50%) [   0/125 (  0%)]  Loss: 2.052 (2.05)  LR: 2.886e-03  Time cost: 00:00/00:27 [07:15/09:45]  Acc_iter 2376        Data time: 0.03(0.03)  Forward time: 0.13(0.13)  Batch time: 0.16(0.16)
+2026-09-06 12:38:38,056   INFO  Train:   20/40 ( 50%) [  24/125 ( 19%)]  Loss: 1.872 (1.63)  LR: 2.871e-03  Time cost: 00:04/00:18 [07:20/07:52]  Acc_iter 2400        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:38:38,060   INFO  
+2026-09-06 12:38:47,005   INFO  Train:   20/40 ( 50%) [  74/125 ( 59%)]  Loss: 1.138 (1.61)  LR: 2.837e-03  Time cost: 00:13/00:09 [07:29/07:38]  Acc_iter 2450        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:38:55,826   INFO  Train:   20/40 ( 50%) [ 124/125 ( 99%)]  Loss: 2.290 (1.59)  LR: 2.800e-03  Time cost: 00:22/00:00 [07:38/07:26]  Acc_iter 2500        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  50%|█████     | 20/40 [07:38<07:34, 22.72s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:38:56,351   INFO  Train:   21/40 ( 52%) [   0/125 (  0%)]  Loss: 1.611 (1.61)  LR: 2.799e-03  Time cost: 00:00/00:28 [07:38/09:27]  Acc_iter 2501        Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:39:05,036   INFO  Train:   21/40 ( 52%) [  49/125 ( 39%)]  Loss: 1.497 (1.59)  LR: 2.759e-03  Time cost: 00:08/00:13 [07:47/07:16]  Acc_iter 2550        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:39:05,040   INFO  
+2026-09-06 12:39:13,877   INFO  Train:   21/40 ( 52%) [  99/125 ( 79%)]  Loss: 1.782 (1.58)  LR: 2.714e-03  Time cost: 00:17/00:04 [07:56/07:06]  Acc_iter 2600        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.19(0.18)
+2026-09-06 12:39:18,375   INFO  Train:   21/40 ( 52%) [ 124/125 ( 99%)]  Loss: 1.476 (1.58)  LR: 2.691e-03  Time cost: 00:22/00:00 [08:00/07:02]  Acc_iter 2625        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  52%|█████▎    | 21/40 [08:00<07:10, 22.68s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:39:18,916   INFO  Train:   22/40 ( 55%) [   0/125 (  0%)]  Loss: 1.728 (1.73)  LR: 2.690e-03  Time cost: 00:00/00:29 [08:01/09:15]  Acc_iter 2626        Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.18(0.18)
+2026-09-06 12:39:23,211   INFO  Train:   22/40 ( 55%) [  24/125 ( 19%)]  Loss: 1.104 (1.57)  LR: 2.667e-03  Time cost: 00:04/00:18 [08:05/07:05]  Acc_iter 2650        Data time: 0.07(0.06)  Forward time: 0.12(0.12)  Batch time: 0.19(0.18)
+2026-09-06 12:39:32,548   INFO  Train:   22/40 ( 55%) [  74/125 ( 59%)]  Loss: 1.758 (1.56)  LR: 2.616e-03  Time cost: 00:13/00:09 [08:14/07:05]  Acc_iter 2700        Data time: 0.06(0.06)  Forward time: 0.16(0.13)  Batch time: 0.21(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:39:32,552   INFO  
+2026-09-06 12:39:41,979   INFO  Train:   22/40 ( 55%) [ 124/125 ( 99%)]  Loss: 1.902 (1.55)  LR: 2.562e-03  Time cost: 00:23/00:00 [08:24/06:59]  Acc_iter 2750        Data time: 0.06(0.06)  Forward time: 0.13(0.13)  Batch time: 0.19(0.19)
+
+                                              [Aepochs:  55%|█████▌    | 22/40 [08:24<06:53, 22.95s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:39:42,529   INFO  Train:   23/40 ( 58%) [   0/125 (  0%)]  Loss: 1.312 (1.31)  LR: 2.561e-03  Time cost: 00:00/00:28 [08:24/08:30]  Acc_iter 2751        Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:39:51,594   INFO  Train:   23/40 ( 58%) [  49/125 ( 39%)]  Loss: 1.098 (1.48)  LR: 2.505e-03  Time cost: 00:09/00:14 [08:33/06:49]  Acc_iter 2800        Data time: 0.06(0.06)  Forward time: 0.12(0.13)  Batch time: 0.18(0.18)
+2026-09-06 12:40:01,074   INFO  Train:   23/40 ( 58%) [  99/125 ( 79%)]  Loss: 1.536 (1.50)  LR: 2.445e-03  Time cost: 00:18/00:04 [08:43/06:43]  Acc_iter 2850        Data time: 0.05(0.06)  Forward time: 0.12(0.13)  Batch time: 0.17(0.19)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:40:01,077   INFO  
+2026-09-06 12:40:05,562   INFO  Train:   23/40 ( 58%) [ 124/125 ( 99%)]  Loss: 1.609 (1.52)  LR: 2.414e-03  Time cost: 00:23/00:00 [08:47/06:35]  Acc_iter 2875        Data time: 0.06(0.06)  Forward time: 0.12(0.13)  Batch time: 0.18(0.19)
+
+                                              [Aepochs:  57%|█████▊    | 23/40 [08:47<06:33, 23.14s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:40:06,091   INFO  Train:   24/40 ( 60%) [   0/125 (  0%)]  Loss: 2.296 (2.30)  LR: 2.413e-03  Time cost: 00:00/00:28 [08:48/08:06]  Acc_iter 2876        Data time: 0.04(0.04)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:40:10,325   INFO  Train:   24/40 ( 60%) [  24/125 ( 19%)]  Loss: 1.673 (1.48)  LR: 2.383e-03  Time cost: 00:04/00:18 [08:52/06:15]  Acc_iter 2900        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:40:19,291   INFO  Train:   24/40 ( 60%) [  74/125 ( 59%)]  Loss: 2.078 (1.48)  LR: 2.318e-03  Time cost: 00:13/00:09 [09:01/06:07]  Acc_iter 2950        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:40:28,279   INFO  Train:   24/40 ( 60%) [ 124/125 ( 99%)]  Loss: 1.336 (1.48)  LR: 2.251e-03  Time cost: 00:22/00:00 [09:10/05:58]  Acc_iter 3000        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.19(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:40:28,307   INFO  
+
+                                              [Aepochs:  60%|██████    | 24/40 [09:10<06:08, 23.02s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:40:28,850   INFO  Train:   25/40 ( 62%) [   0/125 (  0%)]  Loss: 1.529 (1.53)  LR: 2.250e-03  Time cost: 00:00/00:28 [09:11/07:33]  Acc_iter 3001        Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:40:37,563   INFO  Train:   25/40 ( 62%) [  49/125 ( 39%)]  Loss: 1.868 (1.45)  LR: 2.182e-03  Time cost: 00:08/00:13 [09:19/05:48]  Acc_iter 3050        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:40:46,342   INFO  Train:   25/40 ( 62%) [  99/125 ( 79%)]  Loss: 1.737 (1.46)  LR: 2.112e-03  Time cost: 00:17/00:04 [09:28/05:36]  Acc_iter 3100        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:40:50,760   INFO  Train:   25/40 ( 62%) [ 124/125 ( 99%)]  Loss: 1.787 (1.46)  LR: 2.075e-03  Time cost: 00:22/00:00 [09:33/05:32]  Acc_iter 3125        Data time: 0.05(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  62%|██████▎   | 25/40 [09:33<05:42, 22.85s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:40:51,306   INFO  Train:   26/40 ( 65%) [   0/125 (  0%)]  Loss: 1.618 (1.62)  LR: 2.074e-03  Time cost: 00:00/00:27 [09:33/06:48]  Acc_iter 3126        Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:40:55,648   INFO  Train:   26/40 ( 65%) [  24/125 ( 19%)]  Loss: 1.584 (1.46)  LR: 2.039e-03  Time cost: 00:04/00:18 [09:37/05:37]  Acc_iter 3150        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:40:55,652   INFO  
+2026-09-06 12:41:04,624   INFO  Train:   26/40 ( 65%) [  74/125 ( 59%)]  Loss: 1.434 (1.43)  LR: 1.965e-03  Time cost: 00:13/00:09 [09:46/05:25]  Acc_iter 3200        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:41:13,584   INFO  Train:   26/40 ( 65%) [ 124/125 ( 99%)]  Loss: 1.177 (1.44)  LR: 1.890e-03  Time cost: 00:22/00:00 [09:55/05:15]  Acc_iter 3250        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  65%|██████▌   | 26/40 [09:55<05:19, 22.84s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:41:14,105   INFO  Train:   27/40 ( 68%) [   0/125 (  0%)]  Loss: 1.750 (1.75)  LR: 1.888e-03  Time cost: 00:00/00:27 [09:56/06:24]  Acc_iter 3251        Data time: 0.03(0.03)  Forward time: 0.13(0.13)  Batch time: 0.16(0.16)
+2026-09-06 12:41:22,768   INFO  Train:   27/40 ( 68%) [  49/125 ( 39%)]  Loss: 1.146 (1.40)  LR: 1.813e-03  Time cost: 00:08/00:13 [10:05/05:02]  Acc_iter 3300        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:41:22,771   INFO  
+2026-09-06 12:41:31,750   INFO  Train:   27/40 ( 68%) [  99/125 ( 79%)]  Loss: 1.513 (1.41)  LR: 1.736e-03  Time cost: 00:17/00:04 [10:14/04:54]  Acc_iter 3350        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:41:36,279   INFO  Train:   27/40 ( 68%) [ 124/125 ( 99%)]  Loss: 1.483 (1.41)  LR: 1.697e-03  Time cost: 00:22/00:00 [10:18/04:51]  Acc_iter 3375        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  68%|██████▊   | 27/40 [10:18<04:56, 22.80s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:41:36,791   INFO  Train:   28/40 ( 70%) [   0/125 (  0%)]  Loss: 0.9748 (0.975)  LR: 1.696e-03  Time cost: 00:00/00:26 [10:19/05:50]  Acc_iter 3376        Data time: 0.03(0.03)  Forward time: 0.13(0.13)  Batch time: 0.16(0.16)
+2026-09-06 12:41:41,042   INFO  Train:   28/40 ( 70%) [  24/125 ( 19%)]  Loss: 1.489 (1.43)  LR: 1.658e-03  Time cost: 00:04/00:18 [10:23/04:46]  Acc_iter 3400        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:41:50,001   INFO  Train:   28/40 ( 70%) [  74/125 ( 59%)]  Loss: 1.298 (1.40)  LR: 1.580e-03  Time cost: 00:13/00:09 [10:32/04:37]  Acc_iter 3450        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:41:50,005   INFO  
+2026-09-06 12:41:58,949   INFO  Train:   28/40 ( 70%) [ 124/125 ( 99%)]  Loss: 1.637 (1.39)  LR: 1.502e-03  Time cost: 00:22/00:00 [10:41/04:28]  Acc_iter 3500        Data time: 0.06(0.06)  Forward time: 0.14(0.12)  Batch time: 0.19(0.18)
+
+                                              [Aepochs:  70%|███████   | 28/40 [10:41<04:33, 22.76s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:41:59,503   INFO  Train:   29/40 ( 72%) [   0/125 (  0%)]  Loss: 1.352 (1.35)  LR: 1.500e-03  Time cost: 00:00/00:29 [10:41/05:52]  Acc_iter 3501        Data time: 0.03(0.03)  Forward time: 0.15(0.15)  Batch time: 0.18(0.18)
+2026-09-06 12:42:08,269   INFO  Train:   29/40 ( 72%) [  49/125 ( 39%)]  Loss: 1.488 (1.34)  LR: 1.423e-03  Time cost: 00:09/00:13 [10:50/04:21]  Acc_iter 3550        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:42:17,187   INFO  Train:   29/40 ( 72%) [  99/125 ( 79%)]  Loss: 1.311 (1.35)  LR: 1.345e-03  Time cost: 00:17/00:04 [10:59/04:11]  Acc_iter 3600        Data time: 0.05(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:42:17,191   INFO  
+2026-09-06 12:42:21,712   INFO  Train:   29/40 ( 72%) [ 124/125 ( 99%)]  Loss: 1.088 (1.35)  LR: 1.306e-03  Time cost: 00:22/00:00 [11:03/04:07]  Acc_iter 3625        Data time: 0.05(0.06)  Forward time: 0.14(0.12)  Batch time: 0.19(0.18)
+
+                                              [Aepochs:  72%|███████▎  | 29/40 [11:04<04:10, 22.77s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:42:22,269   INFO  Train:   30/40 ( 75%) [   0/125 (  0%)]  Loss: 1.308 (1.31)  LR: 1.304e-03  Time cost: 00:00/00:27 [11:04/04:58]  Acc_iter 3626        Data time: 0.03(0.03)  Forward time: 0.13(0.13)  Batch time: 0.16(0.16)
+2026-09-06 12:42:26,490   INFO  Train:   30/40 ( 75%) [  24/125 ( 19%)]  Loss: 1.444 (1.31)  LR: 1.267e-03  Time cost: 00:04/00:17 [11:08/03:59]  Acc_iter 3650        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:42:35,216   INFO  Train:   30/40 ( 75%) [  74/125 ( 59%)]  Loss: 1.027 (1.34)  LR: 1.190e-03  Time cost: 00:13/00:08 [11:17/03:48]  Acc_iter 3700        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.17)
+2026-09-06 12:42:44,080   INFO  Train:   30/40 ( 75%) [ 124/125 ( 99%)]  Loss: 0.8523 (1.33)  LR: 1.113e-03  Time cost: 00:22/00:00 [11:26/03:40]  Acc_iter 3750        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:42:44,084   INFO  
+
+                                              [Aepochs:  75%|███████▌  | 30/40 [11:26<03:46, 22.64s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:42:44,631   INFO  Train:   31/40 ( 78%) [   0/125 (  0%)]  Loss: 1.505 (1.50)  LR: 1.112e-03  Time cost: 00:00/00:30 [11:26/05:08]  Acc_iter 3751        Data time: 0.04(0.04)  Forward time: 0.15(0.15)  Batch time: 0.19(0.19)
+2026-09-06 12:42:53,379   INFO  Train:   31/40 ( 78%) [  49/125 ( 39%)]  Loss: 1.202 (1.31)  LR: 1.038e-03  Time cost: 00:08/00:13 [11:35/03:36]  Acc_iter 3800        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:43:02,135   INFO  Train:   31/40 ( 78%) [  99/125 ( 79%)]  Loss: 1.622 (1.29)  LR: 9.639e-04  Time cost: 00:17/00:04 [11:44/03:24]  Acc_iter 3850        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:43:06,600   INFO  Train:   31/40 ( 78%) [ 124/125 ( 99%)]  Loss: 1.020 (1.29)  LR: 9.274e-04  Time cost: 00:22/00:00 [11:48/03:20]  Acc_iter 3875        Data time: 0.05(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  78%|███████▊  | 31/40 [11:49<03:23, 22.61s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:43:07,164   INFO  Train:   32/40 ( 80%) [   0/125 (  0%)]  Loss: 1.378 (1.38)  LR: 9.260e-04  Time cost: 00:00/00:29 [11:49/04:22]  Acc_iter 3876        Data time: 0.03(0.03)  Forward time: 0.15(0.15)  Batch time: 0.18(0.18)
+2026-09-06 12:43:11,447   INFO  Train:   32/40 ( 80%) [  24/125 ( 19%)]  Loss: 1.348 (1.38)  LR: 8.914e-04  Time cost: 00:04/00:18 [11:53/03:18]  Acc_iter 3900        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:43:11,451   INFO  
+2026-09-06 12:43:20,352   INFO  Train:   32/40 ( 80%) [  74/125 ( 59%)]  Loss: 1.312 (1.31)  LR: 8.204e-04  Time cost: 00:13/00:09 [12:02/03:08]  Acc_iter 3950        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:43:29,250   INFO  Train:   32/40 ( 80%) [ 124/125 ( 99%)]  Loss: 1.603 (1.28)  LR: 7.514e-04  Time cost: 00:22/00:00 [12:11/02:58]  Acc_iter 4000        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  80%|████████  | 32/40 [12:11<03:00, 22.62s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:43:29,835   INFO  Train:   33/40 ( 82%) [   0/125 (  0%)]  Loss: 1.586 (1.59)  LR: 7.500e-04  Time cost: 00:00/00:30 [12:12/04:05]  Acc_iter 4001        Data time: 0.05(0.05)  Forward time: 0.14(0.14)  Batch time: 0.19(0.19)
+2026-09-06 12:43:38,501   INFO  Train:   33/40 ( 82%) [  49/125 ( 39%)]  Loss: 1.257 (1.29)  LR: 6.844e-04  Time cost: 00:08/00:13 [12:20/02:49]  Acc_iter 4050        Data time: 0.07(0.06)  Forward time: 0.10(0.12)  Batch time: 0.17(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:43:38,504   INFO  
+2026-09-06 12:43:47,379   INFO  Train:   33/40 ( 82%) [  99/125 ( 79%)]  Loss: 1.275 (1.27)  LR: 6.196e-04  Time cost: 00:17/00:04 [12:29/02:40]  Acc_iter 4100        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:43:51,772   INFO  Train:   33/40 ( 82%) [ 124/125 ( 99%)]  Loss: 1.181 (1.25)  LR: 5.881e-04  Time cost: 00:22/00:00 [12:34/02:35]  Acc_iter 4125        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  82%|████████▎ | 33/40 [12:34<02:38, 22.59s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:43:52,313   INFO  Train:   34/40 ( 85%) [   0/125 (  0%)]  Loss: 1.199 (1.20)  LR: 5.869e-04  Time cost: 00:00/00:28 [12:34/03:19]  Acc_iter 4126        Data time: 0.03(0.03)  Forward time: 0.15(0.15)  Batch time: 0.17(0.17)
+2026-09-06 12:43:56,511   INFO  Train:   34/40 ( 85%) [  24/125 ( 19%)]  Loss: 1.370 (1.25)  LR: 5.573e-04  Time cost: 00:04/00:17 [12:38/02:30]  Acc_iter 4150        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.17)
+2026-09-06 12:44:05,507   INFO  Train:   34/40 ( 85%) [  74/125 ( 59%)]  Loss: 1.318 (1.23)  LR: 4.975e-04  Time cost: 00:13/00:09 [12:47/02:23]  Acc_iter 4200        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:44:05,511   INFO  
+2026-09-06 12:44:14,468   INFO  Train:   34/40 ( 85%) [ 124/125 ( 99%)]  Loss: 1.214 (1.23)  LR: 4.405e-04  Time cost: 00:22/00:00 [12:56/02:14]  Acc_iter 4250        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  85%|████████▌ | 34/40 [12:56<02:15, 22.62s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:44:15,017   INFO  Train:   35/40 ( 88%) [   0/125 (  0%)]  Loss: 1.352 (1.35)  LR: 4.394e-04  Time cost: 00:00/00:27 [12:57/02:42]  Acc_iter 4251        Data time: 0.03(0.03)  Forward time: 0.13(0.13)  Batch time: 0.16(0.16)
+2026-09-06 12:44:23,711   INFO  Train:   35/40 ( 88%) [  49/125 ( 39%)]  Loss: 1.029 (1.21)  LR: 3.864e-04  Time cost: 00:08/00:13 [13:05/02:04]  Acc_iter 4300        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+2026-09-06 12:44:32,750   INFO  Train:   35/40 ( 88%) [  99/125 ( 79%)]  Loss: 1.216 (1.20)  LR: 3.353e-04  Time cost: 00:17/00:04 [13:15/01:56]  Acc_iter 4350        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.19(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:44:32,754   INFO  
+2026-09-06 12:44:37,167   INFO  Train:   35/40 ( 88%) [ 124/125 ( 99%)]  Loss: 1.361 (1.21)  LR: 3.110e-04  Time cost: 00:22/00:00 [13:19/01:52]  Acc_iter 4375        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  88%|████████▊ | 35/40 [13:19<01:53, 22.64s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:44:37,725   INFO  Train:   36/40 ( 90%) [   0/125 (  0%)]  Loss: 1.325 (1.33)  LR: 3.100e-04  Time cost: 00:00/00:31 [13:19/02:35]  Acc_iter 4376        Data time: 0.03(0.03)  Forward time: 0.16(0.16)  Batch time: 0.19(0.19)
+2026-09-06 12:44:42,265   INFO  Train:   36/40 ( 90%) [  24/125 ( 19%)]  Loss: 0.8633 (1.19)  LR: 2.874e-04  Time cost: 00:04/00:19 [13:24/01:55]  Acc_iter 4400        Data time: 0.05(0.06)  Forward time: 0.12(0.13)  Batch time: 0.18(0.19)
+2026-09-06 12:44:51,285   INFO  Train:   36/40 ( 90%) [  74/125 ( 59%)]  Loss: 0.6534 (1.19)  LR: 2.429e-04  Time cost: 00:13/00:09 [13:33/01:41]  Acc_iter 4450        Data time: 0.06(0.06)  Forward time: 0.13(0.13)  Batch time: 0.19(0.18)
+2026-09-06 12:45:00,005   INFO  Train:   36/40 ( 90%) [ 124/125 ( 99%)]  Loss: 1.524 (1.19)  LR: 2.018e-04  Time cost: 00:22/00:00 [13:42/01:30]  Acc_iter 4500        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:45:00,009   INFO  
+
+                                              [Aepochs:  90%|█████████ | 36/40 [13:42<01:30, 22.70s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:45:00,557   INFO  Train:   37/40 ( 92%) [   0/125 (  0%)]  Loss: 1.258 (1.26)  LR: 2.010e-04  Time cost: 00:00/00:27 [13:42/01:51]  Acc_iter 4501        Data time: 0.03(0.03)  Forward time: 0.14(0.14)  Batch time: 0.17(0.17)
+2026-09-06 12:45:09,391   INFO  Train:   37/40 ( 92%) [  49/125 ( 39%)]  Loss: 1.389 (1.20)  LR: 1.642e-04  Time cost: 00:09/00:13 [13:51/01:21]  Acc_iter 4550        Data time: 0.06(0.06)  Forward time: 0.15(0.12)  Batch time: 0.21(0.18)
+2026-09-06 12:45:18,290   INFO  Train:   37/40 ( 92%) [  99/125 ( 79%)]  Loss: 1.057 (1.17)  LR: 1.304e-04  Time cost: 00:17/00:04 [14:00/01:12]  Acc_iter 4600        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:45:22,720   INFO  Train:   37/40 ( 92%) [ 124/125 ( 99%)]  Loss: 1.343 (1.19)  LR: 1.148e-04  Time cost: 00:22/00:00 [14:04/01:07]  Acc_iter 4625        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.17(0.18)
+
+                                              [Aepochs:  92%|█████████▎| 37/40 [14:05<01:08, 22.70s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:45:23,249   INFO  Train:   38/40 ( 95%) [   0/125 (  0%)]  Loss: 1.102 (1.10)  LR: 1.142e-04  Time cost: 00:00/00:29 [14:05/01:29]  Acc_iter 4626        Data time: 0.04(0.04)  Forward time: 0.15(0.15)  Batch time: 0.19(0.19)
+2026-09-06 12:45:27,531   INFO  Train:   38/40 ( 95%) [  24/125 ( 19%)]  Loss: 1.191 (1.21)  LR: 1.002e-04  Time cost: 00:04/00:18 [14:09/01:03]  Acc_iter 4650        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:45:27,534   INFO  
+2026-09-06 12:45:36,502   INFO  Train:   38/40 ( 95%) [  74/125 ( 59%)]  Loss: 1.111 (1.18)  LR: 7.393e-05  Time cost: 00:13/00:09 [14:18/00:54]  Acc_iter 4700        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.19(0.18)
+2026-09-06 12:45:45,528   INFO  Train:   38/40 ( 95%) [ 124/125 ( 99%)]  Loss: 1.334 (1.17)  LR: 5.155e-05  Time cost: 00:22/00:00 [14:27/00:45]  Acc_iter 4750        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+
+                                              [Aepochs:  95%|█████████▌| 38/40 [14:27<00:45, 22.73s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:45:46,079   INFO  Train:   39/40 ( 98%) [   0/125 (  0%)]  Loss: 0.7744 (0.774)  LR: 5.114e-05  Time cost: 00:00/00:30 [14:28/01:01]  Acc_iter 4751        Data time: 0.04(0.04)  Forward time: 0.15(0.15)  Batch time: 0.19(0.19)
+2026-09-06 12:45:54,853   INFO  Train:   39/40 ( 98%) [  49/125 ( 39%)]  Loss: 1.189 (1.16)  LR: 3.314e-05  Time cost: 00:09/00:13 [14:37/00:36]  Acc_iter 4800        Data time: 0.06(0.06)  Forward time: 0.11(0.12)  Batch time: 0.17(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:45:54,857   INFO  
+2026-09-06 12:46:03,889   INFO  Train:   39/40 ( 98%) [  99/125 ( 79%)]  Loss: 1.056 (1.17)  LR: 1.874e-05  Time cost: 00:18/00:04 [14:46/00:27]  Acc_iter 4850        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:46:08,325   INFO  Train:   39/40 ( 98%) [ 124/125 ( 99%)]  Loss: 1.613 (1.16)  LR: 1.307e-05  Time cost: 00:22/00:00 [14:50/00:22]  Acc_iter 4875        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.19(0.18)
+
+                                              [Aepochs:  98%|█████████▊| 39/40 [14:50<00:22, 22.76s/it]
+train:   0%|          | 0/125 [00:00<?, ?it/s][A2026-09-06 12:46:08,902   INFO  Train:   40/40 (100%) [   0/125 (  0%)]  Loss: 0.9596 (0.960)  LR: 1.286e-05  Time cost: 00:00/00:31 [14:51/00:31]  Acc_iter 4876        Data time: 0.04(0.04)  Forward time: 0.15(0.15)  Batch time: 0.19(0.19)
+2026-09-06 12:46:13,228   INFO  Train:   40/40 (100%) [  24/125 ( 19%)]  Loss: 1.028 (1.15)  LR: 8.412e-06  Time cost: 00:04/00:18 [14:55/00:18]  Acc_iter 4900        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+2026-09-06 12:46:22,135   INFO  Train:   40/40 (100%) [  74/125 ( 59%)]  Loss: 1.169 (1.15)  LR: 2.169e-06  Time cost: 00:13/00:09 [15:04/00:09]  Acc_iter 4950        Data time: 0.06(0.06)  Forward time: 0.13(0.12)  Batch time: 0.18(0.18)
+/bin/sh: 1: gpustat: not found
+2026-09-06 12:46:22,139   INFO  
+2026-09-06 12:46:30,871   INFO  Train:   40/40 (100%) [ 124/125 ( 99%)]  Loss: 0.9727 (1.16)  LR: 3.082e-08  Time cost: 00:22/00:00 [15:13/00:00]  Acc_iter 5000        Data time: 0.06(0.06)  Forward time: 0.12(0.12)  Batch time: 0.18(0.18)
+train:   0%|          | 0/125 [00:22<?, ?it/s]
+epochs: 100%|██████████| 40/40 [15:13<00:00, 22.69s/it]epochs: 100%|██████████| 40/40 [15:13<00:00, 22.83s/it]
+2026-09-06 12:46:31,075   INFO  **********************End training kitti_models/pointpillar_vod_radar_pge(pge_B_long_s1)**********************
+
+
+
+2026-09-06 12:46:31,075   INFO  **********************Start evaluation kitti_models/pointpillar_vod_radar_pge(pge_B_long_s1)**********************
+2026-09-06 12:46:31,076   INFO  Loading KITTI dataset
+2026-09-06 12:46:31,102   INFO  Total samples for KITTI dataset: 413
+2026-09-06 12:46:31,105   INFO  ==> Loading parameters from checkpoint /DATA1/Vivek/Sim2Real_RADAR/Code/physradar/third_party/OpenPCDet/output/kitti_models/pointpillar_vod_radar_pge/pge_B_long_s1/ckpt/checkpoint_epoch_40.pth to GPU
+2026-09-06 12:46:31,187   INFO  ==> Checkpoint trained from version: pcdet+0.6.0+233f849
+2026-09-06 12:46:31,191   INFO  ==> Done (loaded 132/132)
+2026-09-06 12:46:31,193   INFO  *************** EPOCH 40 EVALUATION *****************
+eval:   0%|          | 0/52 [00:00<?, ?it/s]/DATA1/Vivek/Sim2Real_RADAR/Code/physradar/third_party/OpenPCDet/tools/../pcdet/ops/iou3d_nms/iou3d_nms_utils.py:66: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/tensor/python_tensor.cpp:78.)
+  overlaps_bev = torch.cuda.FloatTensor(torch.Size((boxes_a.shape[0], boxes_b.shape[0]))).zero_()  # (N, M)
+eval:   0%|          | 0/52 [00:00<?, ?it/s, recall_0.3=(0, 0) / 16]eval:   2%|▏         | 1/52 [00:00<00:15,  3.28it/s, recall_0.3=(0, 0) / 16]eval:   2%|▏         | 1/52 [00:00<00:15,  3.28it/s, recall_0.3=(0, 0) / 40]eval:   4%|▍         | 2/52 [00:00<00:15,  3.28it/s, recall_0.3=(0, 1) / 64]eval:   6%|▌         | 3/52 [00:00<00:06,  7.97it/s, recall_0.3=(0, 1) / 64]eval:   6%|▌         | 3/52 [00:00<00:06,  7.97it/s, recall_0.3=(0, 3) / 88]eval:   8%|▊         | 4/52 [00:00<00:06,  7.97it/s, recall_0.3=(0, 5) / 100]eval:  10%|▉         | 5/52 [00:00<00:04, 10.79it/s, recall_0.3=(0, 5) / 100]eval:  10%|▉         | 5/52 [00:00<00:04, 10.79it/s, recall_0.3=(0, 5) / 101]eval:  12%|█▏        | 6/52 [00:00<00:04, 10.79it/s, recall_0.3=(0, 5) / 109]eval:  13%|█▎        | 7/52 [00:00<00:03, 12.67it/s, recall_0.3=(0, 5) / 109]eval:  13%|█▎        | 7/52 [00:00<00:03, 12.67it/s, recall_0.3=(0, 5) / 123]eval:  15%|█▌        | 8/52 [00:00<00:03, 12.67it/s, recall_0.3=(0, 10) / 139]eval:  17%|█▋        | 9/52 [00:00<00:03, 13.73it/s, recall_0.3=(0, 10) / 139]eval:  17%|█▋        | 9/52 [00:00<00:03, 13.73it/s, recall_0.3=(0, 16) / 159]eval:  19%|█▉        | 10/52 [00:00<00:03, 13.73it/s, recall_0.3=(0, 34) / 203]eval:  21%|██        | 11/52 [00:00<00:02, 14.39it/s, recall_0.3=(0, 34) / 203]eval:  21%|██        | 11/52 [00:00<00:02, 14.39it/s, recall_0.3=(0, 62) / 259]eval:  23%|██▎       | 12/52 [00:01<00:02, 14.39it/s, recall_0.3=(0, 90) / 315]eval:  25%|██▌       | 13/52 [00:01<00:02, 14.89it/s, recall_0.3=(0, 90) / 315]eval:  25%|██▌       | 13/52 [00:01<00:02, 14.89it/s, recall_0.3=(0, 124) / 375]eval:  27%|██▋       | 14/52 [00:01<00:02, 14.89it/s, recall_0.3=(0, 154) / 439]eval:  29%|██▉       | 15/52 [00:01<00:02, 15.22it/s, recall_0.3=(0, 154) / 439]eval:  29%|██▉       | 15/52 [00:01<00:02, 15.22it/s, recall_0.3=(0, 179) / 508]eval:  31%|███       | 16/52 [00:01<00:02, 15.22it/s, recall_0.3=(0, 214) / 568]eval:  33%|███▎      | 17/52 [00:01<00:02, 15.44it/s, recall_0.3=(0, 214) / 568]eval:  33%|███▎      | 17/52 [00:01<00:02, 15.44it/s, recall_0.3=(0, 250) / 633]eval:  35%|███▍      | 18/52 [00:01<00:02, 15.44it/s, recall_0.3=(0, 276) / 697]eval:  37%|███▋      | 19/52 [00:01<00:02, 15.61it/s, recall_0.3=(0, 276) / 697]eval:  37%|███▋      | 19/52 [00:01<00:02, 15.61it/s, recall_0.3=(0, 304) / 761]eval:  38%|███▊      | 20/52 [00:01<00:02, 15.61it/s, recall_0.3=(0, 343) / 828]eval:  40%|████      | 21/52 [00:01<00:01, 15.76it/s, recall_0.3=(0, 343) / 828]eval:  40%|████      | 21/52 [00:01<00:01, 15.76it/s, recall_0.3=(0, 363) / 894]eval:  42%|████▏     | 22/52 [00:01<00:01, 15.76it/s, recall_0.3=(0, 401) / 958]eval:  44%|████▍     | 23/52 [00:01<00:01, 15.80it/s, recall_0.3=(0, 401) / 958]eval:  44%|████▍     | 23/52 [00:01<00:01, 15.80it/s, recall_0.3=(0, 432) / 1022]eval:  46%|████▌     | 24/52 [00:01<00:01, 15.80it/s, recall_0.3=(0, 462) / 1086]eval:  48%|████▊     | 25/52 [00:01<00:01, 15.85it/s, recall_0.3=(0, 462) / 1086]eval:  48%|████▊     | 25/52 [00:01<00:01, 15.85it/s, recall_0.3=(0, 481) / 1147]eval:  50%|█████     | 26/52 [00:01<00:01, 15.85it/s, recall_0.3=(0, 501) / 1201]eval:  52%|█████▏    | 27/52 [00:01<00:01, 15.87it/s, recall_0.3=(0, 501) / 1201]eval:  52%|█████▏    | 27/52 [00:01<00:01, 15.87it/s, recall_0.3=(0, 516) / 1245]eval:  54%|█████▍    | 28/52 [00:02<00:01, 15.87it/s, recall_0.3=(0, 541) / 1301]eval:  56%|█████▌    | 29/52 [00:02<00:01, 15.94it/s, recall_0.3=(0, 541) / 1301]eval:  56%|█████▌    | 29/52 [00:02<00:01, 15.94it/s, recall_0.3=(0, 573) / 1357]eval:  58%|█████▊    | 30/52 [00:02<00:01, 15.94it/s, recall_0.3=(0, 608) / 1408]eval:  60%|█████▉    | 31/52 [00:02<00:01, 15.92it/s, recall_0.3=(0, 608) / 1408]eval:  60%|█████▉    | 31/52 [00:02<00:01, 15.92it/s, recall_0.3=(0, 638) / 1456]eval:  62%|██████▏   | 32/52 [00:02<00:01, 15.92it/s, recall_0.3=(0, 662) / 1498]eval:  63%|██████▎   | 33/52 [00:02<00:01, 15.87it/s, recall_0.3=(0, 662) / 1498]eval:  63%|██████▎   | 33/52 [00:02<00:01, 15.87it/s, recall_0.3=(0, 683) / 1535]eval:  65%|██████▌   | 34/52 [00:02<00:01, 15.87it/s, recall_0.3=(0, 689) / 1566]eval:  67%|██████▋   | 35/52 [00:02<00:01, 15.92it/s, recall_0.3=(0, 689) / 1566]eval:  67%|██████▋   | 35/52 [00:02<00:01, 15.92it/s, recall_0.3=(0, 690) / 1578]eval:  69%|██████▉   | 36/52 [00:02<00:01, 15.92it/s, recall_0.3=(0, 690) / 1578]eval:  71%|███████   | 37/52 [00:02<00:00, 16.36it/s, recall_0.3=(0, 690) / 1578]eval:  71%|███████   | 37/52 [00:02<00:00, 16.36it/s, recall_0.3=(0, 690) / 1581]eval:  73%|███████▎  | 38/52 [00:02<00:00, 16.36it/s, recall_0.3=(0, 690) / 1589]eval:  75%|███████▌  | 39/52 [00:02<00:00, 16.43it/s, recall_0.3=(0, 690) / 1589]eval:  75%|███████▌  | 39/52 [00:02<00:00, 16.43it/s, recall_0.3=(0, 696) / 1597]eval:  77%|███████▋  | 40/52 [00:02<00:00, 16.43it/s, recall_0.3=(0, 702) / 1605]eval:  79%|███████▉  | 41/52 [00:02<00:00, 16.36it/s, recall_0.3=(0, 702) / 1605]eval:  79%|███████▉  | 41/52 [00:02<00:00, 16.36it/s, recall_0.3=(0, 705) / 1613]eval:  81%|████████  | 42/52 [00:02<00:00, 16.36it/s, recall_0.3=(0, 712) / 1621]eval:  83%|████████▎ | 43/52 [00:02<00:00, 16.35it/s, recall_0.3=(0, 712) / 1621]eval:  83%|████████▎ | 43/52 [00:02<00:00, 16.35it/s, recall_0.3=(0, 720) / 1629]eval:  85%|████████▍ | 44/52 [00:03<00:00, 16.35it/s, recall_0.3=(0, 728) / 1637]eval:  87%|████████▋ | 45/52 [00:03<00:00, 16.28it/s, recall_0.3=(0, 728) / 1637]eval:  87%|████████▋ | 45/52 [00:03<00:00, 16.28it/s, recall_0.3=(0, 731) / 1641]eval:  88%|████████▊ | 46/52 [00:03<00:00, 16.28it/s, recall_0.3=(0, 731) / 1641]eval:  90%|█████████ | 47/52 [00:03<00:00, 16.55it/s, recall_0.3=(0, 731) / 1641]eval:  90%|█████████ | 47/52 [00:03<00:00, 16.55it/s, recall_0.3=(0, 731) / 1641]eval:  92%|█████████▏| 48/52 [00:03<00:00, 16.55it/s, recall_0.3=(0, 731) / 1642]eval:  94%|█████████▍| 49/52 [00:03<00:00, 16.91it/s, recall_0.3=(0, 731) / 1642]eval:  94%|█████████▍| 49/52 [00:03<00:00, 16.91it/s, recall_0.3=(0, 737) / 1650]eval:  96%|█████████▌| 50/52 [00:03<00:00, 16.91it/s, recall_0.3=(0, 745) / 1658]eval:  98%|█████████▊| 51/52 [00:03<00:00, 16.64it/s, recall_0.3=(0, 745) / 1658]eval:  98%|█████████▊| 51/52 [00:03<00:00, 16.64it/s, recall_0.3=(0, 752) / 1666]eval: 100%|██████████| 52/52 [00:03<00:00, 14.85it/s, recall_0.3=(0, 752) / 1666]
+2026-09-06 12:46:34,696   INFO  *************** Performance of EPOCH 40 *****************
+2026-09-06 12:46:34,696   INFO  Generate label finished(sec_per_example: 0.0085 second).
+2026-09-06 12:46:34,697   INFO  recall_roi_0.3: 0.000000
+2026-09-06 12:46:34,697   INFO  recall_rcnn_0.3: 0.451381
+2026-09-06 12:46:34,697   INFO  recall_roi_0.5: 0.000000
+2026-09-06 12:46:34,697   INFO  recall_rcnn_0.5: 0.165066
+2026-09-06 12:46:34,697   INFO  recall_roi_0.7: 0.000000
+2026-09-06 12:46:34,697   INFO  recall_rcnn_0.7: 0.016807
+2026-09-06 12:46:34,698   INFO  Average predicted number of objects(413 samples): 17.046
